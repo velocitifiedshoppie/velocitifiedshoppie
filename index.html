@@ -92,9 +92,13 @@ select{width:100%;padding:12px;border:1.5px solid var(--line);border-radius:14px
 @keyframes shake{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
 @media (prefers-reduced-motion:reduce){.notice.hl{animation:none}}
 .rev .who{flex-wrap:wrap;gap:4px 10px}
+.faq details{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px 16px;margin-bottom:10px}
+.faq summary{cursor:pointer;font-weight:700}.faq p{margin:.5em 0 0;color:var(--mute)}
+.cgrid .card label:first-of-type{margin-top:0}
+#cPrice{min-height:1.4em}
 </style></head><body><div class="page">
 <div id="orderView">
-<nav><div class="brand"><span class="logo">⚡</span>Velocitifiedshoppie</div><div><a class="l" href="#services">Services</a><a class="l" href="#combos-s">Combos</a><a class="l" href="#how">How it works</a><a class="pill sm" href="#details">Order now</a></div></nav>
+<nav><div class="brand"><span class="logo">⚡</span>Velocitifiedshoppie</div><div><a class="l" href="#services">Services</a><a class="l" href="#combos-s">Combos</a><a class="l" href="#how">How it works</a><a class="l" href="#faq">FAQ</a><a class="l" href="#help">Help</a><a class="pill sm" href="#details">Order now</a></div></nav>
 <section class="hero in">
   <div><h1>Grow your Instagram from the very first order</h1><p>Views, likes, followers and more. Try a free 5K views demo before you buy.</p><a class="pill" href="#services">See packs</a>
   <div class="mini-row"><span><i class="bub"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><circle cx="7" cy="7" r="1"/></svg></i>Multi-pack<br>discounts</span><span><i class="bub"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg></i>Pay safely<br>by UPI</span><span><i class="bub"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg></i>Support<br>24/7</span></div></div>
@@ -110,7 +114,18 @@ select{width:100%;padding:12px;border:1.5px solid var(--line);border-radius:14px
 <section class="block sage" id="services"><h2 class="sec">Our services</h2><p class="sub" style="color:#3f5a47">Pick any packs you like. Prices are in ₹.</p><div class="dbanner"><span>Save more:</span><span class="chipd">2 packs = ₹3 off</span><span class="chipd">3 or more packs = ₹5 off</span><span class="note">Applied automatically.</span></div><div class="grid" id="grid"></div></section>
 <section class="in pad" id="how"><h2 class="sec">How it works</h2><p class="sub">Four easy steps.</p>
   <div class="steps"><div class="step"><b>1</b><h3 style="margin:0;font-size:1.05rem">Choose packs</h3><p>Tap + on what you want.</p></div><div class="step"><b>2</b><h3 style="margin:0;font-size:1.05rem">Add your details</h3><p>Name, phone and Instagram link.</p></div><div class="step"><b>3</b><h3 style="margin:0;font-size:1.05rem">Pay by UPI</h3><p>Scan the QR and enter the transaction ID.</p></div><div class="step"><b>4</b><h3 style="margin:0;font-size:1.05rem">We confirm</h3><p>We verify payment and start your order.</p></div></div></section>
+<section class="in pad" id="faq"><h2 class="sec">Questions</h2><div class="faq">
+<details><summary>How long until my order starts?</summary><p>Orders begin after we confirm your payment. Smaller packs usually start sooner than very large ones. You can check progress any time under "Track your order" below.</p></details>
+<details><summary>Do you need my password?</summary><p>No. We never ask for your password. We only need your public profile link or reel/post link.</p></details>
+<details><summary>Why must my account be public?</summary><p>We can only deliver to public accounts. If views and likes are hidden, or "Flagged for review" is on, the numbers will not increase.</p></details>
+<details><summary>Can followers drop?</summary><p>Followers can drop over time. Low drop packs cost more because they are meant to drop less. If something looks wrong, use the help form below.</p></details>
+<details><summary>How do I pay?</summary><p>Scan the QR code or use the UPI ID on the payment page. Then type the exact amount you paid and your UTR / transaction ID.</p></details>
+<details><summary>Can I use the free demo again?</summary><p>The free demo is one per customer, and it must be ordered on its own.</p></details>
+</div></section>
 <section class="block" id="combos-s" style="background:var(--sage2)"><h2 class="sec">Combo offers</h2><p class="sub">More for less. Views, likes and more in one pack.</p><div class="cgrid" id="combos"></div></section>
+<section class="block sage" id="custom" style="margin-top:14px"><h2 class="sec">Custom amount</h2><p class="sub" style="color:#3f5a47">Need a different number? Pick a service and type your amount, like 3K or 150. We work out the price from our rates.</p>
+<div class="card" style="max-width:520px"><label for="cSel">Service</label><select id="cSel"></select><label for="cQty">Amount</label><input id="cQty" placeholder="e.g. 3K or 150" autocomplete="off"><p id="cPrice" class="upi" style="margin:10px 0"></p><button id="cAdd" class="pill green" type="button">Add to order</button><div id="cList" style="margin-top:10px"></div></div>
+<p class="note" style="color:#3f5a47;margin-bottom:0">Custom prices follow our pack prices. Amounts smaller than our smallest pack are priced in proportion.</p></section>
 
 <section class="in pad" id="details"><div class="form">
     <h2 class="sec">Your details</h2><p id="dmsg" class="note" style="color:var(--orange);font-weight:700;margin:0"></p>
@@ -123,10 +138,13 @@ select{width:100%;padding:12px;border:1.5px solid var(--line);border-radius:14px
 <label class="ack" for="ack"><input type="checkbox" id="ack"><span>I have read this and my account is public, my views and likes are visible, and Flagged for review is off.</span></label></div>
 <label for="name">Name</label><input id="name" autocomplete="name">
     <label for="phone">Phone / WhatsApp number</label><input id="phone" type="tel" inputmode="numeric" maxlength="10">
-    <label for="link">Instagram username or post/reel link</label><input id="link" placeholder="@username or https://instagram.com/reel/...">
+    <label for="link" id="lbl">Reel or post link</label><input id="link" placeholder="https://instagram.com/reel/..."><div id="l2wrap" class="hide"><label for="link2">Reel or post link (for views, likes, comments)</label><input id="link2" placeholder="https://instagram.com/reel/..."></div><p id="lhint" class="note"></p>
     <label for="notes">Notes (optional)</label><textarea id="notes" rows="2"></textarea>
     <p class="note">Your account must be public while the order runs. We never ask for your password.</p>
 </div></section>
+<section class="in pad" id="help"><h2 class="sec">Track or get help</h2><p class="sub">Use the phone number and UTR from your order.</p>
+<div class="cgrid"><div class="card"><h3>Track your order</h3><label for="trPhone">Phone number</label><input id="trPhone" type="tel" inputmode="numeric" maxlength="10"><label for="trUtr">UTR / transaction ID</label><input id="trUtr"><button id="trBtn" class="pill green" style="width:100%;margin:12px 0" type="button">Check status</button><div id="trOut" class="note"></div></div>
+<div class="card" id="spForm"><h3>Need help with an order?</h3><label for="spPhone">Phone number</label><input id="spPhone" type="tel" inputmode="numeric" maxlength="10"><label for="spUtr">UTR / transaction ID</label><input id="spUtr"><label for="spIssue">What is the problem?</label><select id="spIssue"><option>Views not arrived</option><option>Likes not arrived</option><option>Followers not arrived</option><option>Followers dropped</option><option>Wrong link or account</option><option>Other</option></select><label for="spText">Details (optional)</label><textarea id="spText" rows="2"></textarea><p id="spOut" class="note" style="margin:8px 0 0"></p><button id="spBtn" class="pill green" style="width:100%;margin-top:10px" type="button">Send request</button></div></div></section>
 </div>
 <div id="payView" class="hide"><nav><div class="brand"><span class="logo">⚡</span>Velocitifiedshoppie</div></nav>
   <div class="in center" style="padding-top:20px"><h1 style="font-size:2.4rem;margin:0">Pay ₹<span id="payAmt"></span></h1><p class="sub">Complete your order with UPI.</p><p class="sub" id="payBreak" style="color:var(--orange);font-weight:700;margin-top:-14px"></p></div>
@@ -191,21 +209,50 @@ $("combos").innerHTML=CATS.slice(9).map((c,i)=>card(c,i+9)).join("");
 document.addEventListener("click",e=>{const b=e.target.closest("button[data-k]");if(!b)return;const k=b.dataset.k,[c,i]=k.split("|");
  let q=Math.max(0,(cart[k]||0)+(+b.dataset.d));if(!CATS[c][2][i][1])q=Math.min(q,1);cart[k]=q;$("q-"+c+"-"+i).textContent=q;sum()});
 let lastPack="";
+const customs=[];
+const num=s=>{const m=String(s).trim().match(/^([\d.,]+)\s*([kKmM]?)/);if(!m)return NaN;return parseFloat(m[1].replace(/,/g,""))*({k:1e3,m:1e6}[m[2].toLowerCase()]||1)};
+function priceFor(ci,q){const P=CATS[ci][2].map(it=>[num(it[0]),it[1]]).sort((x,y)=>x[0]-y[0]);
+ if(q<=P[0][0])return Math.ceil(P[0][1]*q/P[0][0]);
+ for(let i=1;i<P.length;i++)if(q<=P[i][0]){const[a,pa]=P[i-1],[b,pb]=P[i];return Math.ceil(pa+(pb-pa)*(q-a)/(b-a))}
+ const[a,pa]=P[P.length-2],[b,pb]=P[P.length-1];return Math.ceil(pb+(pb-pa)/(b-a)*(q-b))}
+$("cSel").innerHTML=CATS.slice(0,8).map((c,i)=>`<option value="${i}">${c[0]}</option>`).join("");
+function cCalc(){const q=Math.round(num($("cQty").value)),ci=+$("cSel").value;if(!(q>=1)||q>1e7)return null;return{ci,q,price:Math.max(1,priceFor(ci,q))}}
+function cShow(){const r=cCalc();$("cPrice").textContent=r?r.q.toLocaleString("en-IN")+" "+CATS[r.ci][0]+" = ₹"+r.price:"Type a number, like 3K or 150";$("cAdd").disabled=!r}
+function cList(){$("cList").innerHTML=customs.map((x,i)=>`<div class="row"><div class="n">${x.label}</div><div class="p">₹${x.price}</div><div class="q"><button data-r="${i}" aria-label="Remove">✕</button></div></div>`).join("")}
+$("cSel").onchange=cShow;$("cQty").oninput=cShow;
+$("cAdd").onclick=()=>{const r=cCalc();if(!r)return;customs.push({ci:r.ci,price:r.price,label:r.q.toLocaleString("en-IN")+" "+CATS[r.ci][0]});$("cQty").value="";cShow();cList();sum()};
+$("cList").onclick=e=>{const b=e.target.closest("button[data-r]");if(!b)return;customs.splice(+b.dataset.r,1);cList();sum()};
+function needs(){let prof=false,post=false;const f=ci=>{ci=+ci;if(ci==2||ci==3)prof=true;else if(ci==10){prof=true;post=true}else post=true};
+ for(const k in cart)if(cart[k])f(k.split("|")[0]);customs.forEach(x=>f(x.ci));return{prof,post}}
+const PROF=/^(@?[A-Za-z0-9._]{1,30}|(https?:\/\/)?(www\.)?instagram\.com\/[A-Za-z0-9._]{1,30}\/?(\?.*)?)$/i,POST=/instagram\.com\/(p|reel|reels|tv)\/[\w-]+/i;
+function linkBad(id){const n=needs(),v=$(id).value.trim();if(id=="link2")return !POST.test(v);return n.prof?!PROF.test(v):!POST.test(v)}
+function updateLinks(){const n=needs();$("l2wrap").classList.toggle("hide",!(n.prof&&n.post));
+ $("lbl").textContent=n.prof?"Instagram profile link or @username":"Reel or post link";
+ $("link").placeholder=n.prof?"@username or https://instagram.com/username":"https://instagram.com/reel/...";
+ $("lhint").textContent=n.prof&&n.post?"Followers need your profile. Views, likes and comments need the reel/post link below.":n.prof?"For followers we need your profile link or @username.":"For views, likes, comments, saves, shares and reposts we need the full reel/post link."}
+cShow();updateLinks();
 function t(){let a=0,n=0,c=0,l=[];for(const k in cart){const q=cart[k];if(!q)continue;const[ci,i]=k.split("|"),it=CATS[ci][2][i];a+=q*it[1];c+=q;if(it[1])n+=q;l.push(q+" x "+(CATS[ci][0]=="DEMO"?"":CATS[ci][0]+": ")+it[0])}
+customs.forEach(x=>{a+=x.price;c++;n++;l.push("1 x Custom: "+x.label)});
  const d=a?Math.min(a,n>=3?5:n==2?3:0):0;return{sub:a,disc:d,a:a-d,n:c,pn:n,s:l.join(" | ")}}
-function sum(){const x=t();$("total").textContent=x.a;$("count").textContent=x.n;$("go").disabled=!x.n;$("go").textContent=x.n&&!x.a?"Claim free demo":"Continue to pay";
+function sum(){const x=t();updateLinks();$("total").textContent=x.a;$("count").textContent=x.n;$("go").disabled=!x.n;$("go").textContent=x.n&&!x.a?"Claim free demo":"Continue to pay";
  $("dnote").textContent=x.pn==1?"Add 1 more pack to save ₹3":x.pn==2?"You save ₹3. Add 1 more pack to save ₹5":x.disc?"You save ₹"+x.disc+" with pack discount":""}
 function show(v){["orderView","payView","doneView"].forEach(i=>$(i).classList.toggle("hide",i!=v));$("bar").classList.toggle("hide",v!="orderView");scrollTo(0,0)}
-async function send(txn){const x=t(),d={name:$("name").value.trim(),phone:$("phone").value.trim(),link:$("link").value.trim(),items:x.s,subtotal:x.sub,discount:x.disc,total:x.a,paid:txn==="FREE DEMO"?0:Number($("paid").value),txn,notes:$("notes").value.trim()};lastPack=x.s;
+async function send(txn){const x=t(),d={name:$("name").value.trim(),phone:$("phone").value.trim(),link:[$("link").value.trim(),$("link2").value.trim()].filter(Boolean).join(" | "),items:x.s,subtotal:x.sub,discount:x.disc,total:x.a,paid:txn==="FREE DEMO"?0:Number($("paid").value),txn,notes:$("notes").value.trim()};lastPack=x.s;
  if(SCRIPT_URL.startsWith("PASTE"))console.log("Demo mode. Order:",d);else{try{await fetch(SCRIPT_URL,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain"},body:JSON.stringify(d)})}catch(err){console.error("fetch failed",err);if(!(navigator.sendBeacon&&navigator.sendBeacon(SCRIPT_URL,new Blob([JSON.stringify(d)],{type:"text/plain"}))))throw err}}show("doneView")}
-const F=["name","phone","link"];
-$("go").onclick=async()=>{const bad=id=>{const v=$(id).value.trim();return id=="phone"?!/^\d{10}$/.test(v):v.length<(id=="link"?3:1)};
- const noAck=!$("ack").checked;
- if(F.some(bad)||noAck){F.forEach(id=>$(id).classList.toggle("hl",bad(id)));$("notice").classList.toggle("hl",noAck);
-  $("dmsg").textContent=noAck&&!F.some(bad)?"Please read the important notice below and tick the box.":"Almost there! Fill in your details below and tick the notice, then tap the button again.";
-  $("details").scrollIntoView({behavior:"smooth"});const f=F.find(bad);if(f)setTimeout(()=>$(f).focus({preventScroll:true}),600);return}
+const F=["name","phone","link","link2"];
+$("go").onclick=async()=>{const bad=id=>{const v=$(id).value.trim();return id=="name"?v.length<1:id=="phone"?!/^\d{10}$/.test(v):linkBad(id)};
+ const n=needs(),ids=n.prof&&n.post?F:F.slice(0,3),noAck=!$("ack").checked,badIds=ids.filter(bad);
+ if(badIds.length||noAck){F.forEach(id=>$(id).classList.toggle("hl",badIds.includes(id)));$("notice").classList.toggle("hl",noAck);
+  const onlyLink=badIds.length&&badIds.every(i=>i.startsWith("link"));
+  $("dmsg").textContent=!badIds.length?"Please read the important notice below and tick the box.":onlyLink?"That does not look like the right Instagram link. "+$("lhint").textContent:"Almost there! Fill in your details correctly below and tick the notice, then tap the button again.";
+  $("details").scrollIntoView({behavior:"smooth"});if(badIds.length)setTimeout(()=>$(badIds[0]).focus({preventScroll:true}),600);return}
  $("notice").classList.remove("hl");F.forEach(id=>$(id).classList.remove("hl"));$("dmsg").textContent="";
- const x=t();if(!x.a){try{await send("FREE DEMO")}catch(e){alert("Could not send. Try again.")}return}
+ const x=t();
+ if(cart["8|0"]&&x.a>0){$("dmsg").textContent="The free demo is a separate order. Please remove it, or place the demo on its own.";$("details").scrollIntoView({behavior:"smooth"});return}
+ if(!x.a){try{const r=await fetch(SCRIPT_URL+"?act=demo&phone="+encodeURIComponent($("phone").value.trim())+"&link="+encodeURIComponent($("link").value.trim()));const j=await r.json();
+   if(j.used){$("dmsg").textContent="The free demo has already been used with this phone number or Instagram account.";$("details").scrollIntoView({behavior:"smooth"});return}}catch(e){}
+  try{await send("FREE DEMO")}catch(e){alert("Could not send. Try again.")}return}
+ post({type:"lead",name:$("name").value.trim(),phone:$("phone").value.trim(),link:[$("link").value.trim(),$("link2").value.trim()].filter(Boolean).join(" | "),items:x.s,total:x.a}).catch(()=>{});
  $("payAmt").textContent=x.a;$("payBreak").textContent=x.disc?"Subtotal ₹"+x.sub+" · Discount −₹"+x.disc:"";$("upiShow").textContent=UPI_ID;
  $("upiLink").href="upi://pay?pa="+encodeURIComponent(UPI_ID)+"&pn="+encodeURIComponent(SHOP)+"&am="+x.a+"&cu=INR&tn="+encodeURIComponent("Order "+$("name").value.trim());show("payView")};
 $("back").onclick=e=>{e.preventDefault();show("orderView")};
@@ -235,4 +282,15 @@ $("revSend").onclick=async()=>{const text=$("revText").value.trim(),m=$("revMsg"
  try{await post({type:"review",name:$("name").value.trim(),pack:lastPack,stars:+$("revStars").value,text});
   $("revForm").innerHTML="<p class='sub' style='margin:0'>Thank you! Your review will appear on the site once we approve it.</p>"}
  catch(err){console.error(err);b.disabled=false;b.textContent="Submit review";m.textContent="Could not send your review. Check your internet and try again."}};
+$("trBtn").onclick=async()=>{const m=$("trOut"),ph=$("trPhone").value.trim(),u=$("trUtr").value.trim();
+ if(!/^\d{10}$/.test(ph)||u.length<6){m.textContent="Enter your 10-digit phone number and your UTR / transaction ID (at least the last 6 digits).";return}
+ m.textContent="Checking…";
+ try{const r=await fetch(SCRIPT_URL+"?act=track&phone="+encodeURIComponent(ph)+"&utr="+encodeURIComponent(u));const l=await r.json();
+  m.innerHTML=l.length?l.map(o=>`<div class="row"><div class="n"><b>${escH(o.id)}</b> · ${escH(o.items)}<br><span class="note">${escH(o.time)} · ₹${escH(o.total)}</span></div><div class="p">${escH(o.status)}</div></div>`).join(""):"No order found. Check your phone number and UTR."}
+ catch(e){m.textContent="Could not check right now. Please try again."}};
+$("spBtn").onclick=async()=>{const m=$("spOut"),b=$("spBtn"),ph=$("spPhone").value.trim(),u=$("spUtr").value.trim();
+ if(!/^\d{10}$/.test(ph)||u.length<6){m.style.color="#b3261e";m.textContent="Enter your 10-digit phone number and UTR / transaction ID.";return}
+ b.disabled=true;b.textContent="Sending…";
+ try{await post({type:"support",phone:ph,utr:u,issue:$("spIssue").value,text:$("spText").value.trim()});$("spForm").innerHTML="<p class='sub' style='margin:0'>Thank you. We have received your request and will contact you soon.</p>"}
+ catch(e){b.disabled=false;b.textContent="Send request";m.style.color="#b3261e";m.textContent="Could not send. Check your internet and try again."}};
 </script></body></html>
