@@ -367,9 +367,11 @@ function saveReceipt(){const o=lastOrder,W=620,c=document.createElement("canvas"
  c.width=W;c.height=P*2+L.length*LH;g.fillStyle="#f8efe0";g.fillRect(0,0,c.width,c.height);g.textBaseline="top";
  L.forEach((r,i)=>{g.font=r[1];g.fillStyle=r[2]||"#26382b";g.fillText(r[0],P,P+i*LH)});
  c.toBlob(b=>{const a=document.createElement("a");a.href=URL.createObjectURL(b);a.download="receipt-"+(rc?String(rc.id).replace(/\W/g,""):"order")+".png";document.body.appendChild(a);a.click();a.remove()})}
+let isOwner=false;try{if(/owner/i.test(location.hash))localStorage.setItem("owner","1");isOwner=localStorage.getItem("owner")==="1"}catch(e){}
+function firstPing(){try{if(sessionStorage.getItem("seen"))return false;sessionStorage.setItem("seen","1");return true}catch(e){return true}}
 const sid=Math.random().toString(36).slice(2,12);let pings=0;
-async function ping(){if(document.hidden||pings>=25||SCRIPT_URL.startsWith("PASTE"))return;pings++;
- try{const r=await fetch(SCRIPT_URL+"?act=ping&sid="+sid),j=await r.json(),a=[];
+async function ping(){if(isOwner||document.hidden||pings>=25||SCRIPT_URL.startsWith("PASTE"))return;pings++;
+ try{const r=await fetch(SCRIPT_URL+"?act=ping&sid="+sid+(firstPing()?"&first=1":"")),j=await r.json(),a=[];
   if(j.viewing>=2)a.push("🟢 "+j.viewing+" people viewing now");
   if(j.today>=1)a.push(j.today+(j.today==1?" order":" orders")+" today");
   if(j.done>=1)a.push(j.done+" delivered today");
