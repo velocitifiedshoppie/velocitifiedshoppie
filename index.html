@@ -119,6 +119,8 @@ select{width:100%;padding:12px;border:1.5px solid var(--line);border-radius:14px
 .cb .ct{display:block;font-size:.68rem;opacity:.7;margin-top:2px}
 .cc{align-self:flex-end;background:var(--green);color:#fff;border-bottom-right-radius:4px}
 .cs{align-self:flex-start;background:var(--sage2);color:var(--ink);border-bottom-left-radius:4px}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:84px;z-index:15;background:var(--green);color:#fff;font-weight:700;padding:10px 18px;border-radius:999px;box-shadow:0 6px 18px rgba(0,0,0,.25);text-decoration:none;font-size:.9rem}
+.toast.hide{display:none}
 </style></head><body><div class="page">
 <div id="orderView">
 <nav><div class="brand"><span class="logo">⚡</span>Velocitifiedshoppie</div><div><a class="l" href="#services">Services</a><a class="l" href="#combos-s">Combos</a><a class="l" href="#how">How it works</a><a class="l" href="#faq">FAQ</a><a class="l" href="#help">Help</a><a class="pill sm" href="#details">Order now</a></div></nav>
@@ -195,6 +197,7 @@ select{width:100%;padding:12px;border:1.5px solid var(--line);border-radius:14px
 <label for="revStars">Rating</label><select id="revStars"><option value="5">★★★★★ Excellent</option><option value="4">★★★★ Good</option><option value="3">★★★ Okay</option><option value="2">★★ Poor</option><option value="1">★ Bad</option></select>
 <label for="revText">Your review</label><textarea id="revText" rows="3"></textarea><p id="revMsg" class="note" style="color:#b3261e;margin:8px 0 0"></p><button id="revSend" class="pill green" style="width:100%;margin-top:12px" type="button">Submit review</button></div></div></div>
 </div>
+<a id="replyToast" class="toast hide" href="#help">💬 New reply from us. Tap to read.</a>
 <div id="cartPanel" class="cartov hide"><div class="cartsh" role="dialog" aria-modal="true" aria-label="Your cart"><div class="carth"><h3 style="margin:0">🛒 Your cart</h3><button id="cartX" class="cx" aria-label="Close cart" type="button">✕</button></div><div id="cartBody"></div><button id="cartGo" class="pill" style="width:100%;margin-top:12px" type="button">Continue</button></div></div>
 <div class="bar" id="bar"><div class="inn">
   <button id="cartBtn" class="cartbtn" type="button"><div class="note" style="color:#d7e6d4">🛒 <span id="count">0</span> packs · <span class="vc">View cart</span></div><div class="tot">₹<span id="total">0</span></div><div class="note" id="dnote" style="color:#ffe3b8"></div></button>
@@ -302,7 +305,7 @@ customs.forEach(x=>{a+=x.price;c++;n++;l.push("1 x Custom: "+x.label)});
 function sum(){const x=t();updateLinks();renderCart();$("total").textContent=x.a;$("count").textContent=x.n;$("go").disabled=!x.n;$("go").textContent=x.n&&!x.a?"Claim free demo":"Continue to pay";
  const nx=nextTier(x.sub);$("dnote").textContent=(x.disc?"You save ₹"+x.disc+" ("+x.pct+"% off). ":"")+(x.sub&&nx?"Add ₹"+(nx[0]-x.sub)+" more for "+nx[1]+"% off":"")}
 function show(v){["orderView","payView","doneView"].forEach(i=>$(i).classList.toggle("hide",i!=v));$("bar").classList.toggle("hide",v!="orderView");$("cartPanel").classList.add("hide");scrollTo(0,0)}
-async function send(txn){const x=t(),d={name:$("name").value.trim(),phone:$("phone").value.trim(),link:linksStr(),items:x.s,subtotal:x.sub,discount:x.disc,total:x.a,paid:txn==="FREE DEMO"?0:Number($("paid").value),txn,notes:$("notes").value.trim()};lastPack=x.s;
+async function send(txn){const x=t(),d={name:$("name").value.trim(),phone:$("phone").value.trim(),link:linksStr(),items:x.s,subtotal:x.sub,discount:x.disc,total:x.a,paid:txn==="FREE DEMO"?0:Number($("paid").value),txn,notes:$("notes").value.trim(),cid};lastPack=x.s;try{localStorage.setItem("lastphone",d.phone);localStorage.setItem("chatused","1")}catch(e){}
  if(SCRIPT_URL.startsWith("PASTE"))console.log("Demo mode. Order:",d);else{try{await fetch(SCRIPT_URL,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain"},body:JSON.stringify(d)})}catch(err){console.error("fetch failed",err);if(!(navigator.sendBeacon&&navigator.sendBeacon(SCRIPT_URL,new Blob([JSON.stringify(d)],{type:"text/plain"}))))throw err}}lastOrder=d;rc=null;show("doneView");loadReceipt()}
 $("go").onclick=async()=>{const p=plan(),bad=id=>{const v=$(id).value.trim();return id=="name"?v.length<1:id=="phone"?!/^\d{10}$/.test(v):linkBad(id)};
  const ids=["name","phone"].concat(p.prof||p.post?["link"]:[]).concat(p.prof&&p.post?["link2"]:[]).concat(p.units.map((c,i)=>"lc"+i));
@@ -315,7 +318,7 @@ $("go").onclick=async()=>{const p=plan(),bad=id=>{const v=$(id).value.trim();ret
  const x=t();
  if(cart["8|0"]&&x.a>0){$("dmsg").textContent="The free demo is a separate order. Please remove it, or place the demo on its own.";$("details").scrollIntoView({behavior:"smooth"});return}
  if(!x.a){
-  try{const r=await fetch(SCRIPT_URL+"?act=demo&link="+encodeURIComponent(linksStr()));const j=await r.json();
+  try{const j=await jget("act=demo&link="+encodeURIComponent(linksStr()));
    if(j.used){$("dmsg").textContent="The free demo has already been used with this Instagram account.";$("details").scrollIntoView({behavior:"smooth"});return}}catch(e){}
   try{await send("FREE DEMO")}catch(e){alert("Could not send. Try again.")}return}
  post({type:"lead",name:$("name").value.trim(),phone:$("phone").value.trim(),link:linksStr(),items:x.s,total:x.a}).catch(()=>{});
@@ -338,9 +341,14 @@ const escH=v=>String(v).replace(/[&<>"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;"
 function showReviews(list){if(!Array.isArray(list)||!list.length)return;$("reviews").classList.remove("hide");
  $("revGrid").innerHTML=list.map(r=>`<div class="card rev"><div class="stars">${"★".repeat(Math.min(5,Math.max(1,+r.stars||5)))}</div><p>${escH(r.text)}</p><div class="who"><b>${escH(r.name)}</b><span>${escH(r.pack||"")}</span></div></div>`).join("")}
 showReviews(REVIEWS);
-if(!SCRIPT_URL.startsWith("PASTE"))fetch(SCRIPT_URL).then(r=>r.json()).then(l=>showReviews(REVIEWS.concat(Array.isArray(l)?l:[]))).catch(()=>{});
+if(!SCRIPT_URL.startsWith("PASTE"))jget("act=reviews").then(l=>showReviews(REVIEWS.concat(Array.isArray(l)?l:[]))).catch(()=>{});
 $("demoBtn").onclick=()=>{cart["8|0"]=1;$("q-8-0").textContent=1;sum();$("dmsg").textContent="Free demo added. Fill in your details, then tap “Claim free demo”.";$("details").scrollIntoView({behavior:"smooth"})};
 document.addEventListener("input",e=>e.target.classList&&e.target.classList.remove("hl"));$("ack").onchange=()=>$("notice").classList.remove("hl");
+function jget(q){return new Promise((res,rej)=>{const cb="cb"+Math.random().toString(36).slice(2,10),s=document.createElement("script");let t=null;
+ const done=()=>{clearTimeout(t);try{delete window[cb]}catch(e){}s.remove()};
+ t=setTimeout(()=>{done();rej(new Error("timeout"))},20000);
+ window[cb]=d=>{done();res(d)};s.onerror=()=>{done();rej(new Error("failed"))};
+ s.src=SCRIPT_URL+"?"+q+"&callback="+cb;document.head.appendChild(s)})}
 async function post(obj){const body=JSON.stringify(obj);try{await fetch(SCRIPT_URL,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain"},body})}catch(err){console.error(err);if(!(navigator.sendBeacon&&navigator.sendBeacon(SCRIPT_URL,new Blob([body],{type:"text/plain"}))))throw err}}
 $("revSend").onclick=async()=>{const text=$("revText").value.trim(),m=$("revMsg"),b=$("revSend");
  if(text.length<5){$("revText").classList.add("hl");m.textContent="Please write a few words about your experience.";return}
@@ -351,13 +359,14 @@ $("revSend").onclick=async()=>{const text=$("revText").value.trim(),m=$("revMsg"
 $("trBtn").onclick=async()=>{const m=$("trOut"),ph=$("trPhone").value.trim(),u=$("trUtr").value.trim();
  if(!/^\d{10}$/.test(ph)||u.length<6){m.textContent="Enter your 10-digit phone number and your UTR / transaction ID (at least the last 6 digits).";return}
  m.textContent="Checking…";
- try{const r=await fetch(SCRIPT_URL+"?act=track&phone="+encodeURIComponent(ph)+"&utr="+encodeURIComponent(u));const l=await r.json();
-  m.innerHTML=l.length?l.map(o=>`<div class="row"><div class="n"><b>${escH(o.id)}</b> · ${escH(o.items)}<br><span class="note">${escH(o.time)} · ₹${escH(o.total)}</span></div><div class="p">${escH(o.status)}</div></div>`).join(""):"No order found. Check your phone number and UTR."}
+ try{const j=await jget("act=track&phone="+encodeURIComponent(ph)+"&utr="+encodeURIComponent(u)),l=j.orders||[],n=j.notes||[];
+  if(!l.length){m.textContent="No order found. Check your phone number and UTR.";return}
+  m.innerHTML=l.map(o=>`<div class="row"><div class="n"><b>${escH(o.id)}</b> · ${escH(o.items)}<br><span class="note">${escH(o.time)} · ₹${escH(o.total)}</span></div><div class="p">${escH(o.status)}</div></div>`).join("")+(n.length?`<div class="nudge" style="margin-top:10px"><b>Messages from us</b>${n.map(x=>`<p style="margin:6px 0"><span class="note">${x.order?"About "+escH(x.order)+" · ":""}${escH(x.t)}</span><br>${escH(x.text)}</p>`).join("")}</div>`:"")}
  catch(e){m.textContent="Could not check right now. Please try again."}};
 $("spBtn").onclick=async()=>{const m=$("spOut"),b=$("spBtn"),ph=$("spPhone").value.trim(),u=$("spUtr").value.trim();
  if(!/^\d{10}$/.test(ph)||u.length<6){m.style.color="#b3261e";m.textContent="Enter your 10-digit phone number and UTR / transaction ID.";return}
  b.disabled=true;b.textContent="Sending…";
- try{await post({type:"support",phone:ph,utr:u,issue:$("spIssue").value,text:$("spText").value.trim()});$("spForm").innerHTML="<p class='sub' style='margin:0'>Thank you. We have received your request and will contact you soon.</p>"}
+ try{await post({type:"support",phone:ph,utr:u,issue:$("spIssue").value,text:$("spText").value.trim(),cid});try{localStorage.setItem("chatused","1")}catch(e){}chatAct=Date.now();$("spForm").innerHTML="<h3 style='margin:0 0 6px'>Request received</h3><p class='sub' style='margin:0'>Thank you. Our reply will appear in the chat box and under Track your order.</p>"}
  catch(e){b.disabled=false;b.textContent="Send request";m.style.color="#b3261e";m.textContent="Could not send. Check your internet and try again."}};
 let lastOrder=null,rc=null;
 function renderReceipt(){const o=lastOrder;if(!o)return;
@@ -366,7 +375,7 @@ function renderReceipt(){const o=lastOrder;if(!o)return;
  $("rcSave").onclick=saveReceipt}
 async function loadReceipt(){renderReceipt();
  for(let i=0;i<6;i++){await new Promise(r=>setTimeout(r,2500));
-  try{const r=await fetch(SCRIPT_URL+"?act=receipt&phone="+encodeURIComponent(lastOrder.phone)+"&utr="+encodeURIComponent(lastOrder.txn));const j=await r.json();if(j&&j.id){rc=j;renderReceipt();return}}catch(e){}}
+  try{const j=await jget("act=receipt&phone="+encodeURIComponent(lastOrder.phone)+"&utr="+encodeURIComponent(lastOrder.txn));if(j&&j.id){rc=j;renderReceipt();return}}catch(e){}}
  if(!rc&&$("rcId"))$("rcId").textContent="not ready yet. Use Track your order later."}
 function saveReceipt(){const o=lastOrder,W=620,c=document.createElement("canvas"),g=c.getContext("2d"),P=30,LH=30;
  const wrap=(t,f)=>{g.font=f;const w=[],words=String(t).split(" ");let l="";words.forEach(x=>{const n=l?l+" "+x:x;if(g.measureText(n).width>W-2*P&&l){w.push(l);l=x}else l=n});w.push(l);return w};
@@ -383,11 +392,11 @@ let isOwner=false;try{if(/owner/i.test(location.hash))localStorage.setItem("owne
 function firstPing(){try{if(sessionStorage.getItem("seen"))return false;sessionStorage.setItem("seen","1");return true}catch(e){return true}}
 function visitorClick(e){if(isOwner||SCRIPT_URL.startsWith("PASTE"))return;const b=e.target.closest("button,a,summary,select,label");if(!b||!firstPing())return;
  let w="";try{if(b.dataset.k){const[c,i]=b.dataset.k.split("|").map(Number);w=(+b.dataset.d>0?"Added ":"Changed ")+CATS[c][2][i][0]}else w=(b.getAttribute("aria-label")||b.textContent||b.id||"button").trim().replace(/\s+/g," ").slice(0,40)}catch(x){}
- fetch(SCRIPT_URL+"?act=ping&sid="+sid+"&first=1&what="+encodeURIComponent(w)).catch(()=>{})}
+ post({type:"visit",what:w}).catch(()=>{})}
 document.addEventListener("click",visitorClick,true);
 const sid=Math.random().toString(36).slice(2,12);let pings=0;
 async function ping(){if(isOwner||document.hidden||pings>=25||SCRIPT_URL.startsWith("PASTE"))return;pings++;
- try{const r=await fetch(SCRIPT_URL+"?act=ping&sid="+sid),j=await r.json(),a=[];
+ try{const j=await jget("act=ping&sid="+sid),a=[];
   if(j.viewing>=2)a.push("🟢 "+j.viewing+" people viewing now");
   if(j.today>=1)a.push(j.today+(j.today==1?" order":" orders")+" today");
   if(j.done>=1)a.push(j.done+" delivered today");
@@ -397,21 +406,22 @@ let cid="";try{cid=localStorage.getItem("cid")||""}catch(e){}
 if(!cid){cid=Array.from(crypto.getRandomValues(new Uint8Array(7)),b=>b.toString(16).padStart(2,"0")).join("");try{localStorage.setItem("cid",cid)}catch(e){}}
 try{$("chName").value=localStorage.getItem("chname")||""}catch(e){}
 let chatN=0,chatAct=0,chatTick=0;
-const bubble=m=>`<div class="cb ${m.from=="Shop"?"cs":"cc"}">${eh(m.text)}<span class="ct">${m.from=="Shop"?"Shop · ":""}${eh(m.t||"")}</span></div>`;
+const bubble=m=>`<div class="cb ${m.from=="Shop"?"cs":"cc"}">${eh(m.text)}<span class="ct">${m.from=="Shop"?"Shop · "+(m.o?"about "+eh(m.o)+" · ":""):""}${eh(m.t||"")}</span></div>`;
 function chatAdd(list){if(!list.length)return;const box=$("chatBox");const n=box.querySelector(".cnote");if(n)n.remove();box.insertAdjacentHTML("beforeend",list.map(bubble).join(""));box.scrollTop=box.scrollHeight}
 async function chatPoll(full){if(SCRIPT_URL.startsWith("PASTE"))return;
- try{const r=await fetch(SCRIPT_URL+"?act=chat&cid="+cid+"&since="+(full?0:chatN)),j=await r.json();
+ try{const j=await jget("act=chat&cid="+cid+"&since="+(full?0:chatN));
   if(full)chatN=0;
-  if(j.msgs&&j.msgs.length){chatAdd(j.msgs);if(j.msgs.some(m=>m.from=="Shop"))chatAct=Date.now()}
+  if(j.msgs&&j.msgs.length){chatAdd(j.msgs);if(j.msgs.some(m=>m.from=="Shop")){chatAct=Date.now();const r=$("chatCard").getBoundingClientRect();if(r.bottom<0||r.top>innerHeight)$("replyToast").classList.remove("hide")}}
   chatN=Math.max(chatN,j.n||0)}catch(e){}}
 $("chSend").onclick=async()=>{const t=$("chText").value.trim(),m=$("chMsg"),b=$("chSend");
  if(t.length<2){m.textContent="Type your message first.";return}
  b.disabled=true;b.textContent="Sending…";m.textContent="";
- try{await post({type:"chat",cid,name:$("chName").value.trim(),text:t});
+ try{await post({type:"chat",cid,name:$("chName").value.trim(),text:t,phone:(()=>{try{return localStorage.getItem("lastphone")||""}catch(e){return""}})()});
   try{localStorage.setItem("chatused","1");localStorage.setItem("chname",$("chName").value.trim())}catch(e){}
   chatAdd([{from:"Customer",text:t,t:new Date().toLocaleTimeString("en-IN",{hour:"2-digit",minute:"2-digit"})}]);chatN++;chatAct=Date.now();$("chText").value=""}
  catch(e){m.textContent="Could not send. Check your internet and try again."}
  b.disabled=false;b.textContent="Send message"};
 setInterval(()=>{if(document.hidden||SCRIPT_URL.startsWith("PASTE"))return;const age=Date.now()-chatAct;chatTick++;if(age<120000||(age<1800000&&chatTick%3==0))chatPoll(false)},10000);
+$("replyToast").onclick=()=>$("replyToast").classList.add("hide");
 try{if(localStorage.getItem("chatused")){chatAct=Date.now();chatPoll(true)}}catch(e){}
 </script></body></html>
