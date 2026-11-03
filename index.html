@@ -111,12 +111,20 @@ select{width:100%;padding:12px;border:1.5px solid var(--line);border-radius:14px
 .live{background:var(--sage2);color:var(--green);text-align:center;font-weight:700;font-size:.92rem;padding:10px 16px}
 .pbar{height:8px;background:var(--line);border-radius:6px;overflow:hidden}.pbar i{display:block;height:100%;background:var(--orange);border-radius:6px}
 .nudge{background:var(--card);border:1px dashed var(--orange);border-radius:14px;padding:10px 12px;margin-top:10px}
+.mchk{display:flex;gap:10px;align-items:flex-start;margin:12px 0 4px;font-weight:700;color:var(--ink)}
+.mchk input{width:20px;height:20px;margin-top:2px;accent-color:var(--green);flex:none}
+.mchk.hide{display:none}
+.chatbox{max-height:260px;min-height:90px;overflow:auto;display:flex;flex-direction:column;gap:6px;background:var(--cream);border:1px solid var(--line);border-radius:14px;padding:10px;margin-bottom:10px}
+.cb{max-width:85%;padding:8px 12px;border-radius:14px;font-size:.9rem;line-height:1.35;word-break:break-word}
+.cb .ct{display:block;font-size:.68rem;opacity:.7;margin-top:2px}
+.cc{align-self:flex-end;background:var(--green);color:#fff;border-bottom-right-radius:4px}
+.cs{align-self:flex-start;background:var(--sage2);color:var(--ink);border-bottom-left-radius:4px}
 </style></head><body><div class="page">
 <div id="orderView">
 <nav><div class="brand"><span class="logo">⚡</span>Velocitifiedshoppie</div><div><a class="l" href="#services">Services</a><a class="l" href="#combos-s">Combos</a><a class="l" href="#how">How it works</a><a class="l" href="#faq">FAQ</a><a class="l" href="#help">Help</a><a class="pill sm" href="#details">Order now</a></div></nav>
 <section class="hero in">
   <div><h1>Grow your Instagram from the very first order</h1><p>Views, likes, followers and more. Try a free 5K views demo before you buy.</p><a class="pill" href="#services">See packs</a>
-  <div class="mini-row"><span><i class="bub"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><circle cx="7" cy="7" r="1"/></svg></i>Multi-pack<br>discounts</span><span><i class="bub"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg></i>Pay safely<br>by UPI</span><span><i class="bub"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg></i>Support<br>24/7</span></div></div>
+  <div class="mini-row"><span><i class="bub"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><circle cx="7" cy="7" r="1"/></svg></i>Spend more<br>save more</span><span><i class="bub"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg></i>Pay safely<br>by UPI</span><span><i class="bub"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg></i>Support<br>24/7</span></div></div>
   <div class="blob"><div class="plate"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".6"/></svg></div><div class="offer"><i class="bub"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12v10H4V12"/><path d="M2 7h20v5H2z"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg></i><div><b>Try before you buy</b><small>5K reel views free</small></div><button class="pill" id="demoBtn" type="button">Claim free</button></div></div>
 </section>
 <div id="live" class="live hide" aria-live="polite"></div>
@@ -127,7 +135,7 @@ select{width:100%;padding:12px;border:1.5px solid var(--line);border-radius:14px
   <div class="ft"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg><h4>24/7 support</h4><p>Message us any time with questions.</p></div>
   <div class="ft"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12v10H4V12"/><path d="M2 7h20v5H2z"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg><h4>Try first</h4><p>Claim 5K reel views free before you buy.</p></div>
 </section>
-<section class="block sage" id="services"><h2 class="sec">Our services</h2><p class="sub" style="color:#3f5a47">Pick any packs you like. Prices are in ₹.</p><div class="dbanner"><span>Save more:</span><span class="chipd">2 packs = ₹3 off</span><span class="chipd">3 or more packs = ₹5 off</span><span class="note">Applied automatically.</span></div><div class="grid" id="grid"></div></section>
+<section class="block sage" id="services"><h2 class="sec">Our services</h2><p class="sub" style="color:#3f5a47">Pick any packs you like. Prices are in ₹.</p><div class="dbanner"><span>Spend more, save more:</span><span class="chipd">₹50+ = 1% off</span><span class="chipd">₹100+ = 3%</span><span class="chipd">₹200+ = 5%</span><span class="chipd">₹400+ = 7%</span><span class="chipd">₹700+ = 9%</span><span class="chipd">₹1000+ = 10%</span><span class="note">Applied automatically in your cart.</span></div><div class="grid" id="grid"></div></section>
 <section class="block sage" id="custom" style="margin-top:14px"><h2 class="sec">Custom amount</h2><p class="sub" style="color:#3f5a47">Need a different number? Pick a service and type your amount, like 3K or 150. We work out the price from our rates.</p>
 <div class="card" style="max-width:520px"><label for="cSel">Service</label><select id="cSel"></select><label for="cQty">Amount</label><input id="cQty" placeholder="e.g. 3K or 150" autocomplete="off"><p id="cPrice" class="upi" style="margin:10px 0"></p><button id="cAdd" class="pill green" type="button">Add to order</button><div id="cList" style="margin-top:10px"></div></div>
 <p class="note" style="color:#3f5a47;margin-bottom:0">Custom prices follow our pack prices. Amounts smaller than our smallest pack are priced in proportion.</p></section>
@@ -148,6 +156,7 @@ select{width:100%;padding:12px;border:1.5px solid var(--line);border-radius:14px
 <label class="ack" for="ack"><input type="checkbox" id="ack"><span>I have read this and my account is public, my views and likes are visible, and Flagged for review is off.</span></label></div>
 <label for="name">Name</label><input id="name" autocomplete="name">
     <label for="phone">Phone / WhatsApp number</label><input id="phone" type="tel" inputmode="numeric" maxlength="10">
+    <label id="mwrap" class="mchk hide"><input type="checkbox" id="multi"><span>I am ordering for different reels/posts (I will add a separate link for each pack)</span></label>
     <label for="link" id="lbl">Reel or post link</label><input id="link" placeholder="https://instagram.com/reel/..."><div id="l2wrap" class="hide"><label for="link2">Reel or post link (for views, likes, comments)</label><input id="link2" placeholder="https://instagram.com/reel/..."></div><div id="clinks"></div><p id="lhint" class="note"></p>
     <label for="notes">Notes (optional)</label><textarea id="notes" rows="2"></textarea>
     <p class="note">Your account must be public while the order runs. We never ask for your password.</p>
@@ -163,7 +172,7 @@ select{width:100%;padding:12px;border:1.5px solid var(--line);border-radius:14px
 <details><summary>Can I use the free demo again?</summary><p>The free demo is one per customer, and it must be ordered on its own.</p></details>
 </div></section>
 <section class="in pad" id="help"><h2 class="sec">Track or get help</h2><p class="sub">Use the phone number and UTR from your order.</p>
-<div class="cgrid"><div class="card"><h3>Track your order</h3><label for="trPhone">Phone number</label><input id="trPhone" type="tel" inputmode="numeric" maxlength="10"><label for="trUtr">UTR / transaction ID</label><input id="trUtr"><button id="trBtn" class="pill green" style="width:100%;margin:12px 0" type="button">Check status</button><div id="trOut" class="note"></div></div>
+<div class="cgrid"><div class="card" id="chatCard"><h3>Chat with us</h3><div id="chatBox" class="chatbox"><p class="note cnote" style="margin:0">Ask us anything about your order. Our reply appears here.</p></div><label for="chName" style="margin-top:0">Your name or phone (optional)</label><input id="chName" autocomplete="name"><label for="chText">Your message</label><textarea id="chText" rows="2" maxlength="500"></textarea><p id="chMsg" class="note" style="color:#b3261e;margin:6px 0 0"></p><button id="chSend" class="pill green" style="width:100%;margin-top:8px" type="button">Send message</button></div><div class="card"><h3>Track your order</h3><label for="trPhone">Phone number</label><input id="trPhone" type="tel" inputmode="numeric" maxlength="10"><label for="trUtr">UTR / transaction ID</label><input id="trUtr"><button id="trBtn" class="pill green" style="width:100%;margin:12px 0" type="button">Check status</button><div id="trOut" class="note"></div></div>
 <div class="card" id="spForm"><h3>Need help with an order?</h3><label for="spPhone">Phone number</label><input id="spPhone" type="tel" inputmode="numeric" maxlength="10"><label for="spUtr">UTR / transaction ID</label><input id="spUtr"><label for="spIssue">What is the problem?</label><select id="spIssue"><option>Views not arrived</option><option>Likes not arrived</option><option>Followers not arrived</option><option>Followers dropped</option><option>Wrong link or account</option><option>Other</option></select><label for="spText">Details (optional)</label><textarea id="spText" rows="2"></textarea><p id="spOut" class="note" style="margin:8px 0 0"></p><button id="spBtn" class="pill green" style="width:100%;margin-top:10px" type="button">Send request</button></div></div></section>
 </div>
 <div id="payView" class="hide"><nav><div class="brand"><span class="logo">⚡</span>Velocitifiedshoppie</div></nav>
@@ -231,6 +240,9 @@ $("combos").innerHTML=CATS.slice(9).map((c,i)=>card(c,i+9)).join("");
 document.addEventListener("click",e=>{const b=e.target.closest("button[data-k]");if(!b)return;const k=b.dataset.k,[c,i]=k.split("|");
  let q=Math.max(0,(cart[k]||0)+(+b.dataset.d));if(!CATS[c][2][i][1])q=Math.min(q,1);cart[k]=q;$("q-"+c+"-"+i).textContent=q;sum()});
 let lastPack="";
+const TIERS=[[1000,10],[700,9],[400,7],[200,5],[100,3],[50,1]];
+function tier(a){for(const t of TIERS)if(a>=t[0])return t;return[0,0]}
+const nextTier=a=>TIERS.slice().reverse().find(t=>t[0]>a);
 const customs=[];
 const num=s=>{const m=String(s).trim().match(/^([\d.,]+)\s*([kKmM]?)/);if(!m)return NaN;return parseFloat(m[1].replace(/,/g,""))*({k:1e3,m:1e6}[m[2].toLowerCase()]||1)};
 function priceFor(ci,q){const P=CATS[ci][2].map(it=>[num(it[0]),it[1]]).sort((x,y)=>x[0]-y[0]);
@@ -244,38 +256,38 @@ function cList(){$("cList").innerHTML=customs.map((x,i)=>`<div class="row"><div 
 $("cSel").onchange=cShow;$("cQty").oninput=cShow;
 $("cAdd").onclick=()=>{const r=cCalc();if(!r)return;customs.push({ci:r.ci,price:r.price,label:r.q.toLocaleString("en-IN")+" "+CATS[r.ci][0]});$("cQty").value="";cShow();cList();sum()};
 $("cList").onclick=e=>{const b=e.target.closest("button[data-r]");if(!b)return;customs.splice(+b.dataset.r,1);cList();sum()};
-function plan(){let prof=false,post=false;const combos=[];
- for(const k in cart){const q=cart[k];if(!q)continue;const[ci,i]=k.split("|").map(Number);
-  if(ci==8){prof=true;post=true}
-  else if(ci==2||ci==3)prof=true;
-  else if(ci>=9){if(ci==10)prof=true;for(let j=0;j<q;j++)combos.push(CATS[ci][2][i][0])}
-  else post=true}
- customs.forEach(x=>{if(x.ci==2||x.ci==3)prof=true;else post=true});
- if(combos.length==1)post=true;
- return{prof,post,combos:combos.length>1?combos:[]}}
-const PROF=/^(@?[A-Za-z0-9._]{1,30}|(https?:\/\/)?(www\.)?instagram\.com\/[A-Za-z0-9._]{1,30}\/?(\?.*)?)$/i,POST=/instagram\.com\/(p|reel|reels|tv)\/[\w-]+/i;
+const PROF=/^(https?:\/\/)?(www\.)?instagram\.com\/(?!(p|reel|reels|tv|explore|stories|accounts)\/)[A-Za-z0-9._]{1,30}\/?(\?.*)?$/i,POST=/instagram\.com\/(p|reel|reels|tv)\/[\w-]+/i;
+function packList(){const L=[];for(const k in cart){const q=cart[k];if(!q)continue;const[ci,i]=k.split("|").map(Number),it=CATS[ci][2][i];for(let j=0;j<q;j++)L.push({ci,name:(ci>=9?"":CATS[ci][0]+": ")+it[0]})}
+ customs.forEach(x=>L.push({ci:x.ci,name:x.label+" (custom)"}));return L}
+function plan(){const L=packList(),pc=L.filter(u=>u.ci!=2&&u.ci!=3&&u.ci!=8).length,multi=$("multi").checked&&pc>=2;let prof=false,post=false;const units=[];
+ L.forEach(u=>{if(u.ci==8){prof=true;post=true}else if(u.ci==2||u.ci==3)prof=true;else{if(u.ci==10)prof=true;if(u.ci>=9||multi)units.push(u.name);else post=true}});
+ if(units.length==1&&!multi){post=true;units.length=0}
+ return{prof,post,units,pc,multi}}
 function linkBad(id){const p=plan(),v=$(id).value.trim();if(id=="link2"||id.startsWith("lc"))return !POST.test(v);return p.prof?!PROF.test(v):!POST.test(v)}
 const cv={},eh=v=>String(v).replace(/[&<>"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]));
 document.addEventListener("input",e=>{if(e.target.id&&e.target.id.startsWith("lc"))cv[e.target.id]=e.target.value});
 function updateLinks(){const p=plan(),first=p.prof||p.post;
+ $("mwrap").classList.toggle("hide",p.pc<2);
  $("lbl").classList.toggle("hide",!first);$("link").classList.toggle("hide",!first);$("l2wrap").classList.toggle("hide",!(p.prof&&p.post));
- $("lbl").textContent=p.prof?"Instagram profile link or @username":"Reel or post link";
- $("link").placeholder=p.prof?"@username or https://instagram.com/username":"https://instagram.com/reel/...";
- $("clinks").innerHTML=p.combos.map((c,i)=>`<label for="lc${i}">Reel or post link for combo ${i+1} (${eh(c)})</label><input id="lc${i}" value="${eh(cv["lc"+i]||"")}" placeholder="https://instagram.com/reel/...">`).join("");
- $("lhint").textContent=p.combos.length?"Each combo works on one reel or post, so please add a separate link for each combo.":p.prof&&p.post?"Followers need your profile. Views, likes and comments need the reel/post link below.":p.prof?"For followers we need your profile link or @username.":"For views, likes, comments, saves, shares and reposts we need the full reel/post link."}
-function linksStr(){const p=plan(),v=id=>$(id).value.trim(),out=[];const n=(p.prof?1:0)+(p.post?1:0)+p.combos.length,L=(t,x)=>n>1?t+": "+x:x;
+ $("lbl").textContent=p.prof?"Instagram profile link":"Reel or post link";
+ $("link").placeholder=p.prof?"https://instagram.com/yourname":"https://instagram.com/reel/...";
+ $("clinks").innerHTML=p.units.map((c,i)=>`<label for="lc${i}">Reel or post link for pack ${i+1} (${eh(c)})</label><input id="lc${i}" value="${eh(cv["lc"+i]||"")}" placeholder="https://instagram.com/reel/...">`).join("");
+ $("lhint").textContent=p.units.length>1?"Each pack below needs its own reel or post link.":p.prof&&p.post?"Followers and the free demo need your profile link. Views, likes and comments need the reel/post link.":p.prof?"Paste your Instagram profile link, for example https://instagram.com/yourname":"For views, likes, comments, saves, shares and reposts we need the full reel/post link."}
+$("multi").onchange=()=>{updateLinks()};
+function linksStr(){const p=plan(),v=id=>$(id).value.trim(),out=[];const n=(p.prof?1:0)+(p.post?1:0)+p.units.length,L=(t,x)=>n>1?t+": "+x:x;
  if(p.prof)out.push(L("Profile",v("link")));else if(p.post)out.push(L("Post",v("link")));
  if(p.prof&&p.post)out.push(L("Post",v("link2")));
- p.combos.forEach((c,i)=>out.push(L("Combo "+(i+1)+" ("+c+")",v("lc"+i))));
+ p.units.forEach((c,i)=>out.push(L("Pack "+(i+1)+" ("+c+")",v("lc"+i))));
  return out.join(" | ")}
 function cartHTML(edit){const x=t(),rows=[];
  for(const k in cart){const q=cart[k];if(!q)continue;const[ci,i]=k.split("|").map(Number),it=CATS[ci][2][i],nm=(CATS[ci][0]=="DEMO"?"":CATS[ci][0]+": ")+it[0];
   rows.push(`<div class="crow"><div class="cn">${eh(nm)}${q>1?` <span class="note">× ${q}</span>`:""}</div><div class="cp">${it[1]?"₹"+it[1]*q:"FREE"}</div>${edit?`<div class="q"><button data-k="${k}" data-d="-1" aria-label="Remove one">−</button><span>${q}</span><button data-k="${k}" data-d="1" aria-label="Add one">+</button><button data-k="${k}" data-d="-999" aria-label="Remove item">✕</button></div>`:""}</div>`)}
  customs.forEach((c,i)=>rows.push(`<div class="crow"><div class="cn">${eh(c.label)} <span class="note">(custom)</span></div><div class="cp">₹${c.price}</div>${edit?`<div class="q"><button data-cx="${i}" aria-label="Remove item">✕</button></div>`:""}</div>`));
  if(!rows.length)return '<p class="note">Your cart is empty. Pick a pack above to get started.</p>';
- return rows.join("")+`<div class="ctot"><div><span>Subtotal</span><b>₹${x.sub}</b></div>`+(x.disc?`<div class="cdisc"><span>Pack discount (${x.pn>=3?"3 or more packs":"2 packs"})</span><b>−₹${x.disc}</b></div>`:"")+`<div class="cgrand"><span>Total to pay</span><b>₹${x.a}</b></div></div>`+(edit?nudge(x):"")}
-function nudge(x){if(x.pn<1||x.pn>=3)return "";const cands=["1|0","5|0","6|0","4|0"].filter(k=>!cart[k]),k=cands[0],it=k?CATS[+k.split("|")[0]][2][+k.split("|")[1]]:null;
- return `<div class="nudge"><div class="pbar"><i style="width:${Math.round(x.pn/3*100)}%"></i></div><p class="note" style="margin:6px 0">${x.pn==1?"Add 1 more pack to save ₹3, or 2 more to save ₹5.":"Add 1 more pack to save ₹5."}</p>`+(it?`<button class="pill sm" data-k="${k}" data-d="1" type="button">+ Add ${eh(it[0])} · ₹${it[1]}</button>`:"")+`</div>`}
+ return rows.join("")+`<div class="ctot"><div><span>Subtotal</span><b>₹${x.sub}</b></div>`+(x.disc?`<div class="cdisc"><span>Spend discount (${x.pct}%)</span><b>−₹${x.disc}</b></div>`:"")+`<div class="cgrand"><span>Total to pay</span><b>₹${x.a}</b></div></div>`+(edit?nudge(x):"")}
+function nudge(x){const nx=nextTier(x.sub);if(!x.sub||!nx)return "";const gap=nx[0]-x.sub,prev=tier(x.sub)[0],pct=Math.round((x.sub-prev)/(nx[0]-prev)*100);
+ const pp=plan();let best=null;for(let ci=0;ci<8;ci++)CATS[ci][2].forEach((it,i)=>{if((ci==2||ci==3)&&!pp.prof)return;if(it[1]>=gap&&it[1]<=gap+80&&!cart[ci+"|"+i]&&(!best||it[1]<best.p))best={k:ci+"|"+i,n:it[0],p:it[1]}});
+ return `<div class="nudge"><div class="pbar"><i style="width:${pct}%"></i></div><p class="note" style="margin:6px 0">Add ₹${gap} more to get ${nx[1]}% off.</p>`+(best?`<button class="pill sm" data-k="${best.k}" data-d="1" type="button">+ Add ${eh(best.n)} · ₹${best.p}</button>`:"")+`</div>`}
 function renderCart(){$("cartBody").innerHTML=cartHTML(true);$("cartInline").innerHTML=cartHTML(true);$("cartGo").disabled=!t().n}
 $("cartBtn").onclick=()=>$("cartPanel").classList.remove("hide");
 $("cartX").onclick=()=>$("cartPanel").classList.add("hide");
@@ -286,14 +298,14 @@ document.addEventListener("click",e=>{const b=e.target.closest("button[data-cx]"
 cShow();updateLinks();renderCart();
 function t(){let a=0,n=0,c=0,l=[];for(const k in cart){const q=cart[k];if(!q)continue;const[ci,i]=k.split("|"),it=CATS[ci][2][i];a+=q*it[1];c+=q;if(it[1])n+=q;l.push(q+" x "+(CATS[ci][0]=="DEMO"?"":CATS[ci][0]+": ")+it[0])}
 customs.forEach(x=>{a+=x.price;c++;n++;l.push("1 x Custom: "+x.label)});
- const d=a?Math.min(a,n>=3?5:n==2?3:0):0;return{sub:a,disc:d,a:a-d,n:c,pn:n,s:l.join(" | ")}}
+ const pc=tier(a)[1],d=pc?Math.min(250,Math.round(a*pc/100)):0;return{sub:a,disc:d,pct:pc,a:a-d,n:c,pn:n,s:l.join(" | ")}}
 function sum(){const x=t();updateLinks();renderCart();$("total").textContent=x.a;$("count").textContent=x.n;$("go").disabled=!x.n;$("go").textContent=x.n&&!x.a?"Claim free demo":"Continue to pay";
- $("dnote").textContent=x.pn==1?"Add 1 more pack to save ₹3":x.pn==2?"You save ₹3. Add 1 more pack to save ₹5":x.disc?"You save ₹"+x.disc+" with pack discount":""}
+ const nx=nextTier(x.sub);$("dnote").textContent=(x.disc?"You save ₹"+x.disc+" ("+x.pct+"% off). ":"")+(x.sub&&nx?"Add ₹"+(nx[0]-x.sub)+" more for "+nx[1]+"% off":"")}
 function show(v){["orderView","payView","doneView"].forEach(i=>$(i).classList.toggle("hide",i!=v));$("bar").classList.toggle("hide",v!="orderView");$("cartPanel").classList.add("hide");scrollTo(0,0)}
 async function send(txn){const x=t(),d={name:$("name").value.trim(),phone:$("phone").value.trim(),link:linksStr(),items:x.s,subtotal:x.sub,discount:x.disc,total:x.a,paid:txn==="FREE DEMO"?0:Number($("paid").value),txn,notes:$("notes").value.trim()};lastPack=x.s;
  if(SCRIPT_URL.startsWith("PASTE"))console.log("Demo mode. Order:",d);else{try{await fetch(SCRIPT_URL,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain"},body:JSON.stringify(d)})}catch(err){console.error("fetch failed",err);if(!(navigator.sendBeacon&&navigator.sendBeacon(SCRIPT_URL,new Blob([JSON.stringify(d)],{type:"text/plain"}))))throw err}}lastOrder=d;rc=null;show("doneView");loadReceipt()}
 $("go").onclick=async()=>{const p=plan(),bad=id=>{const v=$(id).value.trim();return id=="name"?v.length<1:id=="phone"?!/^\d{10}$/.test(v):linkBad(id)};
- const ids=["name","phone"].concat(p.prof||p.post?["link"]:[]).concat(p.prof&&p.post?["link2"]:[]).concat(p.combos.map((c,i)=>"lc"+i));
+ const ids=["name","phone"].concat(p.prof||p.post?["link"]:[]).concat(p.prof&&p.post?["link2"]:[]).concat(p.units.map((c,i)=>"lc"+i));
  const noAck=!$("ack").checked,badIds=ids.filter(bad);
  if(badIds.length||noAck){document.querySelectorAll("#details input").forEach(el=>el.classList.toggle("hl",badIds.includes(el.id)));$("notice").classList.toggle("hl",noAck);
   const onlyLink=badIds.length&&badIds.every(i=>i!="name"&&i!="phone");
@@ -369,12 +381,37 @@ function saveReceipt(){const o=lastOrder,W=620,c=document.createElement("canvas"
  c.toBlob(b=>{const a=document.createElement("a");a.href=URL.createObjectURL(b);a.download="receipt-"+(rc?String(rc.id).replace(/\W/g,""):"order")+".png";document.body.appendChild(a);a.click();a.remove()})}
 let isOwner=false;try{if(/owner/i.test(location.hash))localStorage.setItem("owner","1");isOwner=localStorage.getItem("owner")==="1"}catch(e){}
 function firstPing(){try{if(sessionStorage.getItem("seen"))return false;sessionStorage.setItem("seen","1");return true}catch(e){return true}}
+function visitorClick(e){if(isOwner||SCRIPT_URL.startsWith("PASTE"))return;const b=e.target.closest("button,a,summary,select,label");if(!b||!firstPing())return;
+ let w="";try{if(b.dataset.k){const[c,i]=b.dataset.k.split("|").map(Number);w=(+b.dataset.d>0?"Added ":"Changed ")+CATS[c][2][i][0]}else w=(b.getAttribute("aria-label")||b.textContent||b.id||"button").trim().replace(/\s+/g," ").slice(0,40)}catch(x){}
+ fetch(SCRIPT_URL+"?act=ping&sid="+sid+"&first=1&what="+encodeURIComponent(w)).catch(()=>{})}
+document.addEventListener("click",visitorClick,true);
 const sid=Math.random().toString(36).slice(2,12);let pings=0;
 async function ping(){if(isOwner||document.hidden||pings>=25||SCRIPT_URL.startsWith("PASTE"))return;pings++;
- try{const r=await fetch(SCRIPT_URL+"?act=ping&sid="+sid+(firstPing()?"&first=1":"")),j=await r.json(),a=[];
+ try{const r=await fetch(SCRIPT_URL+"?act=ping&sid="+sid),j=await r.json(),a=[];
   if(j.viewing>=2)a.push("🟢 "+j.viewing+" people viewing now");
   if(j.today>=1)a.push(j.today+(j.today==1?" order":" orders")+" today");
   if(j.done>=1)a.push(j.done+" delivered today");
   $("live").textContent=a.join("  ·  ");$("live").classList.toggle("hide",!a.length)}catch(e){}}
 ping();setInterval(ping,60000);
+let cid="";try{cid=localStorage.getItem("cid")||""}catch(e){}
+if(!cid){cid=Array.from(crypto.getRandomValues(new Uint8Array(7)),b=>b.toString(16).padStart(2,"0")).join("");try{localStorage.setItem("cid",cid)}catch(e){}}
+try{$("chName").value=localStorage.getItem("chname")||""}catch(e){}
+let chatN=0,chatAct=0,chatTick=0;
+const bubble=m=>`<div class="cb ${m.from=="Shop"?"cs":"cc"}">${eh(m.text)}<span class="ct">${m.from=="Shop"?"Shop · ":""}${eh(m.t||"")}</span></div>`;
+function chatAdd(list){if(!list.length)return;const box=$("chatBox");const n=box.querySelector(".cnote");if(n)n.remove();box.insertAdjacentHTML("beforeend",list.map(bubble).join(""));box.scrollTop=box.scrollHeight}
+async function chatPoll(full){if(SCRIPT_URL.startsWith("PASTE"))return;
+ try{const r=await fetch(SCRIPT_URL+"?act=chat&cid="+cid+"&since="+(full?0:chatN)),j=await r.json();
+  if(full)chatN=0;
+  if(j.msgs&&j.msgs.length){chatAdd(j.msgs);if(j.msgs.some(m=>m.from=="Shop"))chatAct=Date.now()}
+  chatN=Math.max(chatN,j.n||0)}catch(e){}}
+$("chSend").onclick=async()=>{const t=$("chText").value.trim(),m=$("chMsg"),b=$("chSend");
+ if(t.length<2){m.textContent="Type your message first.";return}
+ b.disabled=true;b.textContent="Sending…";m.textContent="";
+ try{await post({type:"chat",cid,name:$("chName").value.trim(),text:t});
+  try{localStorage.setItem("chatused","1");localStorage.setItem("chname",$("chName").value.trim())}catch(e){}
+  chatAdd([{from:"Customer",text:t,t:new Date().toLocaleTimeString("en-IN",{hour:"2-digit",minute:"2-digit"})}]);chatN++;chatAct=Date.now();$("chText").value=""}
+ catch(e){m.textContent="Could not send. Check your internet and try again."}
+ b.disabled=false;b.textContent="Send message"};
+setInterval(()=>{if(document.hidden||SCRIPT_URL.startsWith("PASTE"))return;const age=Date.now()-chatAct;chatTick++;if(age<120000||(age<1800000&&chatTick%3==0))chatPoll(false)},10000);
+try{if(localStorage.getItem("chatused")){chatAct=Date.now();chatPoll(true)}}catch(e){}
 </script></body></html>
