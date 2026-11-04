@@ -395,10 +395,12 @@ function saveReceipt(){const o=lastOrder,W=620,c=document.createElement("canvas"
  c.toBlob(b=>{const a=document.createElement("a");a.href=URL.createObjectURL(b);a.download="receipt-"+(rc?String(rc.id).replace(/\W/g,""):"order")+".png";document.body.appendChild(a);a.click();a.remove()})}
 let isOwner=false;try{if(/owner/i.test(location.hash))localStorage.setItem("owner","1");isOwner=localStorage.getItem("owner")==="1"}catch(e){}
 function firstPing(){try{if(sessionStorage.getItem("seen"))return false;sessionStorage.setItem("seen","1");return true}catch(e){return true}}
+const lp=()=>{try{return localStorage.getItem("lastphone")||""}catch(e){return""}};
 function visitorClick(e){if(isOwner||SCRIPT_URL.startsWith("PASTE"))return;const b=e.target.closest("button,a,summary,select,label");if(!b||!firstPing())return;
  let w="";try{if(b.dataset.k){const[c,i]=b.dataset.k.split("|").map(Number);w=(+b.dataset.d>0?"Added ":"Changed ")+CATS[c][2][i][0]}else w=(b.getAttribute("aria-label")||b.textContent||b.id||"button").trim().replace(/\s+/g," ").slice(0,40)}catch(x){}
- post({type:"visit",what:w}).catch(()=>{})}
+ post({type:"visit",what:w,phone:lp()}).catch(()=>{})}
 document.addEventListener("click",visitorClick,true);
+try{const rp=lp();if(rp&&!isOwner&&!SCRIPT_URL.startsWith("PASTE")&&!sessionStorage.getItem("retseen")){sessionStorage.setItem("retseen","1");post({type:"visit",phone:rp,what:"Opened the site"}).catch(()=>{})}}catch(e){}
 const sid=Math.random().toString(36).slice(2,12);let pings=0;
 async function ping(){if(isOwner||document.hidden||pings>=25||SCRIPT_URL.startsWith("PASTE"))return;pings++;
  try{const j=await jget("act=ping&sid="+sid),a=[];
@@ -410,24 +412,26 @@ ping();setInterval(ping,60000);
 let cid="";try{cid=localStorage.getItem("cid")||""}catch(e){}
 if(!cid){cid=Array.from(crypto.getRandomValues(new Uint8Array(7)),b=>b.toString(16).padStart(2,"0")).join("");try{localStorage.setItem("cid",cid)}catch(e){}}
 try{$("chName").value=localStorage.getItem("chname")||""}catch(e){}
-let chatN=0,chatAct=0,chatTick=0;
+let chatAct=0,chatTick=0,chatShop=-1,lastList=[],pend=[];
 const bubble=m=>`<div class="cb ${m.from=="Shop"?"cs":"cc"}">${eh(m.text)}<span class="ct">${m.from=="Shop"?"Shop · "+(m.o?"about "+eh(m.o)+" · ":""):""}${eh(m.t||"")}</span></div>`;
-function chatAdd(list){if(!list.length)return;const box=$("chatBox");const n=box.querySelector(".cnote");if(n)n.remove();box.insertAdjacentHTML("beforeend",list.map(bubble).join(""));box.scrollTop=box.scrollHeight}
-async function chatPoll(full){if(SCRIPT_URL.startsWith("PASTE"))return;
- try{const j=await jget("act=chat&cid="+cid+"&since="+(full?0:chatN));
-  if(full)chatN=0;
-  if(j.msgs&&j.msgs.length){chatAdd(j.msgs);if(j.msgs.some(m=>m.from=="Shop")){chatAct=Date.now();const r=$("chatCard").getBoundingClientRect();if(r.bottom<0||r.top>innerHeight)$("replyToast").classList.remove("hide")}}
-  chatN=Math.max(chatN,j.n||0)}catch(e){}}
+function chatRender(list){lastList=list;const now=Date.now();pend=pend.filter(p=>now-p.at<120000&&!list.some(m=>m.from!="Shop"&&m.text==p.text));
+ const all=list.concat(pend);if(!all.length)return;const box=$("chatBox"),atEnd=box.scrollTop+box.clientHeight>=box.scrollHeight-40;
+ box.innerHTML=all.map(bubble).join("");if(atEnd||box.dataset.n!=String(all.length))box.scrollTop=box.scrollHeight;box.dataset.n=all.length;
+ const shop=list.filter(m=>m.from=="Shop").length;
+ if(chatShop>=0&&shop>chatShop){chatAct=Date.now();const r=$("chatCard").getBoundingClientRect();if(r.bottom<0||r.top>innerHeight)$("replyToast").classList.remove("hide")}
+ chatShop=shop}
+async function chatPoll(){if(SCRIPT_URL.startsWith("PASTE"))return;try{const j=await jget("act=chat&cid="+cid);chatRender(j.msgs||[])}catch(e){}}
 $("chSend").onclick=async()=>{const t=$("chText").value.trim(),m=$("chMsg"),b=$("chSend");
  if(t.length<2){m.textContent="Type your message first.";return}
  b.disabled=true;b.textContent="Sending…";m.textContent="";
- try{await post({type:"chat",cid,name:$("chName").value.trim(),text:t,phone:(()=>{try{return localStorage.getItem("lastphone")||""}catch(e){return""}})()});
+ try{await post({type:"chat",cid,name:$("chName").value.trim(),text:t,phone:lp()});
   try{localStorage.setItem("chatused","1");localStorage.setItem("chname",$("chName").value.trim())}catch(e){}
-  chatAdd([{from:"Customer",text:t,t:new Date().toLocaleTimeString("en-IN",{hour:"2-digit",minute:"2-digit"})}]);chatN++;chatAct=Date.now();$("chText").value=""}
+  pend.push({from:"Customer",text:t,t:new Date().toLocaleTimeString("en-IN",{hour:"2-digit",minute:"2-digit"}),at:Date.now()});chatAct=Date.now();chatRender(lastList);$("chText").value="";setTimeout(chatPoll,3000)}
  catch(e){m.textContent="Could not send. Check your internet and try again."}
  b.disabled=false;b.textContent="Send message"};
-setInterval(()=>{if(document.hidden||SCRIPT_URL.startsWith("PASTE"))return;const age=Date.now()-chatAct;chatTick++;if(age<120000||(age<1800000&&chatTick%3==0))chatPoll(false)},10000);
+setInterval(()=>{if(document.hidden||SCRIPT_URL.startsWith("PASTE")||!chatAct)return;const age=Date.now()-chatAct;chatTick++;if(age<600000||(age<86400000&&chatTick%3==0))chatPoll()},10000);
+document.addEventListener("visibilitychange",()=>{if(!document.hidden&&chatAct)chatPoll()});
 $("ftCopy").onclick=copySite;$("ftShare").onclick=shareSite;
 $("replyToast").onclick=()=>$("replyToast").classList.add("hide");
-try{if(localStorage.getItem("chatused")){chatAct=Date.now();chatPoll(true)}}catch(e){}
+try{if(localStorage.getItem("chatused")){chatAct=Date.now();chatPoll()}}catch(e){}
 </script></body></html>

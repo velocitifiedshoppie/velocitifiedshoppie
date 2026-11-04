@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Admin inbox</title>
+<style>
+:root{--green:#3f6149;--cream:#f8efe0;--sage:#c8d8c3;--line:#e6dcc8;--orange:#e8743b;--ink:#26382b;--mute:#6f7f70}
+*{box-sizing:border-box}
+body{margin:0 auto;max-width:640px;background:var(--cream);color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;padding:14px;line-height:1.4}
+h2,h3{margin:.3em 0}.hide{display:none}.note{color:var(--mute);font-size:.85rem}
+input,textarea{width:100%;padding:11px;border:1.5px solid var(--line);border-radius:12px;font:inherit;background:#fff;color:var(--ink)}
+button{border:0;border-radius:999px;padding:10px 18px;font:inherit;font-weight:700;cursor:pointer;background:var(--green);color:#fff}
+button.alt{background:var(--sage);color:var(--ink)}button:disabled{opacity:.5}
+.tabs{display:flex;gap:8px;margin:10px 0;flex-wrap:wrap}.tabs button{background:var(--sage);color:var(--ink)}.tabs button.on{background:var(--green);color:#fff}
+.item{background:#fff;border:1px solid var(--line);border-radius:14px;padding:10px 12px;margin-bottom:8px;cursor:pointer}
+.item b{display:block}.dot{color:#c0392b;font-weight:700;font-size:.8rem}
+.chatbox{max-height:50vh;min-height:120px;overflow:auto;display:flex;flex-direction:column;gap:6px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:10px;margin:10px 0}
+.cb{max-width:85%;padding:8px 12px;border-radius:14px;font-size:.92rem;word-break:break-word}
+.cb .ct{display:block;font-size:.68rem;opacity:.7;margin-top:2px}
+.cc{align-self:flex-start;background:var(--sage)}.cs{align-self:flex-end;background:var(--green);color:#fff}
+.box{background:#fff;border:1px solid var(--line);border-radius:18px;padding:18px;margin-top:40px}
+</style></head><body>
+<div id="login" class="box"><h2>Admin inbox</h2><p class="note">Enter your admin PIN (set as ADMIN_PIN in your Google script).</p>
+<input id="pin" type="password" placeholder="Admin PIN" autocomplete="current-password"><p id="lerr" class="note" style="color:#b3261e"></p><button id="go" style="width:100%">Open</button></div>
+<div id="app" class="hide">
+ <h2>Admin inbox</h2>
+ <div class="tabs"><button data-t="chats" class="on">Chats</button><button data-t="tickets">Help requests</button><button data-t="orders">Orders</button><button id="refresh" class="alt">↻ Refresh</button></div>
+ <div id="list"></div>
+ <div id="thread" class="hide"><button id="back" class="alt">← Back</button><h3 id="thTitle"></h3><p id="thInfo" class="note"></p>
+  <div id="thMsgs" class="chatbox"></div>
+  <textarea id="thText" rows="3" placeholder="Type your message to the customer"></textarea>
+  <p id="thMsg" class="note"></p><button id="thSend" style="width:100%">Send</button></div>
+</div>
+<script>
+const SCRIPT_URL="https://script.google.com/macros/s/AKfycbxijTyicFx8BDB8gKxOzNunvsKRGgW2vnENdi1ozToBIKv5BnH9ejbFvnYplAHYO4V27A/exec";
+const $=id=>document.getElementById(id);
+const eh=v=>String(v==null?"":v).replace(/[&<>"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]));
+function jget(q){return new Promise((res,rej)=>{const cb="cb"+Math.random().toString(36).slice(2,10),s=document.createElement("script");let t=null;
+ const done=()=>{clearTimeout(t);try{delete window[cb]}catch(e){}s.remove()};
+ t=setTimeout(()=>{done();rej(new Error("timeout"))},20000);
+ window[cb]=d=>{done();res(d)};s.onerror=()=>{done();rej(new Error("failed"))};
+ s.src=SCRIPT_URL+"?"+q+"&callback="+cb;document.head.appendChild(s)})}
+async function post(o){await fetch(SCRIPT_URL,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain"},body:JSON.stringify(o)})}
+let pin="",tab="chats",cur=null,data={chats:[],tickets:[],orders:[]};
+try{pin=sessionStorage.getItem("apin")||""}catch(e){}
+async function load(first){
+ try{const j=await jget("act=admin&pin="+encodeURIComponent(pin));
+  if(!j.ok){$("lerr").textContent="Wrong PIN, or ADMIN_PIN is not set in the script yet.";$("login").classList.remove("hide");$("app").classList.add("hide");return}
+  data=j;try{sessionStorage.setItem("apin",pin)}catch(e){}$("login").classList.add("hide");$("app").classList.remove("hide");if(!cur)render()}
+ catch(e){if(first)$("lerr").textContent="Could not reach the script. Check your internet."}}
+function render(){const L=$("list");let h="";
+ if(tab=="chats")h=data.chats.length?data.chats.map(c=>`<div class="item" data-k="chat" data-id="${eh(c.cid)}"><b>${eh(c.name||"Customer")} ${c.from=="Customer"?'<span class="dot">● waiting for your reply</span>':""}</b>${eh(c.last)}<div class="note">${eh(c.t)}${c.phone?" · "+eh(c.phone):""}</div></div>`).join(""):'<p class="note">No chats yet.</p>';
+ if(tab=="tickets")h=data.tickets.length?data.tickets.map(t=>`<div class="item" data-k="ticket" data-id="${eh(t.id)}"><b>${eh(t.id)} · ${eh(t.issue)} <span class="note">(${eh(t.status)})</span></b>${eh(t.name)} · ${eh(t.phone)}${t.order?" · "+eh(t.order):""}${t.details?"<br>"+eh(t.details):""}<div class="note">${eh(t.t)}</div></div>`).join(""):'<p class="note">No help requests yet.</p>';
+ if(tab=="orders")h=data.orders.length?data.orders.map(o=>`<div class="item" data-k="order" data-id="${eh(o.id)}"><b>${eh(o.id)} · ${eh(o.name)} · ₹${eh(o.total)}</b><span class="note">${eh(o.phone)} · ${eh(o.status)} · tap to message</span></div>`).join(""):'<p class="note">No orders yet.</p>';
+ L.innerHTML=h}
+async function loadThread(){if(!cur||cur.k!="chat")return;try{const j=await jget("act=admin&a=thread&cid="+encodeURIComponent(cur.id)+"&pin="+encodeURIComponent(pin));
+  const b=$("thMsgs");b.innerHTML=(j.msgs||[]).map(m=>`<div class="cb ${m.from=="Shop"?"cs":"cc"}">${eh(m.text)}<span class="ct">${m.from=="Shop"?"You · ":""}${m.o?"about "+eh(m.o)+" · ":""}${eh(m.t||"")}</span></div>`).join("")||'<p class="note">No messages yet.</p>';b.scrollTop=b.scrollHeight}catch(e){}}
+function open_(k,id){cur={k,id};$("list").classList.add("hide");$("thread").classList.remove("hide");$("thMsg").textContent="";$("thText").value="";
+ const c=data.chats.find(x=>x.cid==id),t=data.tickets.find(x=>x.id==id),o=data.orders.find(x=>x.id==id);
+ if(k=="chat"){$("thTitle").textContent=(c&&c.name)||"Customer chat";$("thInfo").textContent=(c&&c.phone)?c.phone:"";$("thMsgs").classList.remove("hide");loadThread()}
+ else{$("thMsgs").classList.add("hide");
+  if(k=="ticket"){$("thTitle").textContent=id+" · "+(t?t.issue:"");$("thInfo").textContent=t?t.name+" · "+t.phone+(t.order?" · "+t.order:"")+(t.details?" · "+t.details:""):""}
+  else{$("thTitle").textContent="Message "+id;$("thInfo").textContent=o?o.name+" · "+o.phone+" · "+o.status:""}}}
+function close_(){cur=null;$("thread").classList.add("hide");$("list").classList.remove("hide");render()}
+$("list").onclick=e=>{const it=e.target.closest(".item");if(it)open_(it.dataset.k,it.dataset.id)};
+$("back").onclick=()=>{close_();load()};
+document.querySelectorAll(".tabs button[data-t]").forEach(b=>b.onclick=()=>{tab=b.dataset.t;document.querySelectorAll(".tabs button[data-t]").forEach(x=>x.classList.toggle("on",x==b));if(cur)close_();else render()});
+$("refresh").onclick=()=>{cur?loadThread():load()};
+$("go").onclick=()=>{pin=$("pin").value.trim();$("lerr").textContent="";load(true)};
+$("pin").onkeydown=e=>{if(e.key=="Enter")$("go").click()};
+$("thSend").onclick=async()=>{const t=$("thText").value.trim(),m=$("thMsg"),b=$("thSend");if(t.length<1||!cur){m.textContent="Type a message first.";return}
+ b.disabled=true;b.textContent="Sending…";
+ try{await post({type:"admin",pin,action:cur.k=="chat"?"reply":cur.k=="ticket"?"ticket":"msg",target:cur.id,text:t});$("thText").value="";m.textContent="Sent ✔ The customer will see it in their chat box and under Track your order.";setTimeout(loadThread,2000)}
+ catch(e){m.textContent="Could not send. Check your internet and try again."}
+ b.disabled=false;b.textContent="Send"};
+setInterval(()=>{if(document.hidden||$("app").classList.contains("hide"))return;if(cur)loadThread();else load()},15000);
+if(pin)load(true);
+</script></body></html>
