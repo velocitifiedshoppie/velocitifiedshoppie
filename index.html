@@ -197,6 +197,7 @@ select{width:100%;padding:12px;border:1.5px solid var(--line);border-radius:14px
 <label for="revStars">Rating</label><select id="revStars"><option value="5">★★★★★ Excellent</option><option value="4">★★★★ Good</option><option value="3">★★★ Okay</option><option value="2">★★ Poor</option><option value="1">★ Bad</option></select>
 <label for="revText">Your review</label><textarea id="revText" rows="3"></textarea><p id="revMsg" class="note" style="color:#b3261e;margin:8px 0 0"></p><button id="revSend" class="pill green" style="width:100%;margin-top:12px" type="button">Submit review</button></div></div></div>
 </div>
+<section class="in pad" style="text-align:center;padding-bottom:140px"><p class="note" style="margin:0 0 8px">Save our link to order again anytime</p><button id="ftCopy" class="pill sm green" type="button">Copy link</button> <button id="ftShare" class="pill sm" type="button">Share</button></section>
 <a id="replyToast" class="toast hide" href="#help">💬 New reply from us. Tap to read.</a>
 <div id="cartPanel" class="cartov hide"><div class="cartsh" role="dialog" aria-modal="true" aria-label="Your cart"><div class="carth"><h3 style="margin:0">🛒 Your cart</h3><button id="cartX" class="cx" aria-label="Close cart" type="button">✕</button></div><div id="cartBody"></div><button id="cartGo" class="pill" style="width:100%;margin-top:12px" type="button">Continue</button></div></div>
 <div class="bar" id="bar"><div class="inn">
@@ -371,8 +372,11 @@ $("spBtn").onclick=async()=>{const m=$("spOut"),b=$("spBtn"),ph=$("spPhone").val
 let lastOrder=null,rc=null;
 function renderReceipt(){const o=lastOrder;if(!o)return;
  const items=String(o.items).split(" | ").map(x=>x.replace(/^(\d+) x /,"$1 × "));
- $("rcpt").innerHTML=`<h3 style="margin:0 0 4px">Your receipt</h3><p class="note" style="margin:0 0 8px">Order ID: <b id="rcId">${rc?eh(rc.id):"getting your ID…"}</b></p>`+items.map(x=>`<div class="crow"><div class="cn">${eh(x)}</div></div>`).join("")+`<div class="ctot"><div><span>Subtotal</span><b>₹${o.subtotal}</b></div>`+(o.discount?`<div class="cdisc"><span>Discount</span><b>−₹${o.discount}</b></div>`:"")+`<div class="cgrand"><span>Total</span><b>₹${o.total}</b></div></div><p class="note">${eh(o.name)} · ${eh(o.phone)} · UTR ${eh(o.txn)}</p><button id="rcSave" class="pill green" style="width:100%" type="button">Save receipt as image</button><div style="display:flex;gap:8px;margin-top:10px"><button id="rcHome" class="pill sm" style="flex:1" type="button">Back to main page</button><button id="rcMsg" class="pill sm green" style="flex:1" type="button">Chat &amp; messages</button></div>`;
- $("rcSave").onclick=saveReceipt;$("rcHome").onclick=()=>goHome();$("rcMsg").onclick=()=>goHome("help")}
+ $("rcpt").innerHTML=`<h3 style="margin:0 0 4px">Your receipt</h3><p class="note" style="margin:0 0 8px">Order ID: <b id="rcId">${rc?eh(rc.id):"getting your ID…"}</b></p>`+items.map(x=>`<div class="crow"><div class="cn">${eh(x)}</div></div>`).join("")+`<div class="ctot"><div><span>Subtotal</span><b>₹${o.subtotal}</b></div>`+(o.discount?`<div class="cdisc"><span>Discount</span><b>−₹${o.discount}</b></div>`:"")+`<div class="cgrand"><span>Total</span><b>₹${o.total}</b></div></div><p class="note">${eh(o.name)} · ${eh(o.phone)} · UTR ${eh(o.txn)}</p><button id="rcSave" class="pill green" style="width:100%" type="button">Save receipt as image</button><div style="display:flex;gap:8px;margin-top:10px"><button id="rcHome" class="pill sm" style="flex:1" type="button">Back to main page</button><button id="rcMsg" class="pill sm green" style="flex:1" type="button">Chat &amp; messages</button></div><div class="nudge" style="margin-top:12px"><b>Order again anytime</b><p class="note" style="margin:6px 0">Save our link so you can come back easily.</p><div style="display:flex;gap:8px;flex-wrap:wrap"><button id="rcCopy" class="pill sm" type="button">Copy link</button><button id="rcShare" class="pill sm green" type="button">Share / save</button></div><p class="note" style="margin:8px 0 0">Tip: in Chrome tap ⋮ then <b>Add to Home screen</b>. On iPhone tap Share, then <b>Add to Home Screen</b>.</p></div>`;
+ $("rcSave").onclick=saveReceipt;$("rcHome").onclick=()=>goHome();$("rcMsg").onclick=()=>goHome("help");$("rcCopy").onclick=copySite;$("rcShare").onclick=shareSite}
+const SITE=location.href.split("#")[0].split("?")[0];
+async function copySite(e){try{await navigator.clipboard.writeText(SITE);e.target.textContent="Copied ✔"}catch(x){prompt("Copy our link:",SITE)}}
+async function shareSite(){if(navigator.share){try{await navigator.share({title:"Velocitifiedshoppie",text:"Order Instagram growth packs here",url:SITE})}catch(x){}}else copySite({target:$("rcShare")})}
 function goHome(to){for(const k in cart)delete cart[k];customs.length=0;document.querySelectorAll('[id^="q-"]').forEach(e=>{e.textContent="0"});cList();sum();["txn","paid","notes"].forEach(id=>{$(id).value=""});$("sendBtn").disabled=false;$("sendBtn").textContent="I’ve paid · Place my order";$("err").textContent="";show("orderView");if(typeof to=="string")setTimeout(()=>$(to).scrollIntoView({behavior:"smooth"}),60)}
 async function loadReceipt(){renderReceipt();
  for(let i=0;i<6;i++){await new Promise(r=>setTimeout(r,2500));
@@ -423,6 +427,7 @@ $("chSend").onclick=async()=>{const t=$("chText").value.trim(),m=$("chMsg"),b=$(
  catch(e){m.textContent="Could not send. Check your internet and try again."}
  b.disabled=false;b.textContent="Send message"};
 setInterval(()=>{if(document.hidden||SCRIPT_URL.startsWith("PASTE"))return;const age=Date.now()-chatAct;chatTick++;if(age<120000||(age<1800000&&chatTick%3==0))chatPoll(false)},10000);
+$("ftCopy").onclick=copySite;$("ftShare").onclick=shareSite;
 $("replyToast").onclick=()=>$("replyToast").classList.add("hide");
 try{if(localStorage.getItem("chatused")){chatAct=Date.now();chatPoll(true)}}catch(e){}
 </script></body></html>
