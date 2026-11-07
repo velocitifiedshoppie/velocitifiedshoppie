@@ -2,77 +2,133 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
-<title>Admin inbox</title>
+<title>Admin panel</title>
 <style>
-:root{--green:#3f6149;--cream:#f8efe0;--sage:#c8d8c3;--line:#e6dcc8;--orange:#e8743b;--ink:#26382b;--mute:#6f7f70}
+:root{--green:#3f6149;--cream:#f8efe0;--sage:#c8d8c3;--line:#e6dcc8;--orange:#e8743b;--ink:#26382b;--mute:#6f7f70;--red:#c0392b}
 *{box-sizing:border-box}
-body{margin:0 auto;max-width:640px;background:var(--cream);color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;padding:14px;line-height:1.4}
+body{margin:0 auto;max-width:680px;background:var(--cream);color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;padding:14px;line-height:1.4}
 h2,h3{margin:.3em 0}.hide{display:none}.note{color:var(--mute);font-size:.85rem}
 input,textarea{width:100%;padding:11px;border:1.5px solid var(--line);border-radius:12px;font:inherit;background:#fff;color:var(--ink)}
-button{border:0;border-radius:999px;padding:10px 18px;font:inherit;font-weight:700;cursor:pointer;background:var(--green);color:#fff}
-button.alt{background:var(--sage);color:var(--ink)}button:disabled{opacity:.5}
-.tabs{display:flex;gap:8px;margin:10px 0;flex-wrap:wrap}.tabs button{background:var(--sage);color:var(--ink)}.tabs button.on{background:var(--green);color:#fff}
+button,.btn{border:0;border-radius:999px;padding:10px 16px;font:inherit;font-weight:700;cursor:pointer;background:var(--green);color:#fff;text-decoration:none;display:inline-block}
+button.alt,.btn.alt{background:var(--sage);color:var(--ink)}button:disabled{opacity:.5}
+button.sm{padding:6px 12px;font-size:.82rem}button.on{background:var(--green);color:#fff}
+.tabs,.btns,.chips{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
+.tabs button{background:var(--sage);color:var(--ink);padding:8px 14px}.tabs button.on{background:var(--green);color:#fff}
+.chips button{background:#fff;color:var(--ink);border:1px solid var(--line);font-weight:600;padding:6px 12px;font-size:.82rem}
 .item{background:#fff;border:1px solid var(--line);border-radius:14px;padding:10px 12px;margin-bottom:8px;cursor:pointer}
-.item b{display:block}.dot{color:#c0392b;font-weight:700;font-size:.8rem}
-.chatbox{max-height:50vh;min-height:120px;overflow:auto;display:flex;flex-direction:column;gap:6px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:10px;margin:10px 0}
+.r1{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}.dot{color:var(--red);font-weight:700;font-size:.8rem}
+.badge{font-size:.72rem;font-weight:700;padding:3px 9px;border-radius:999px;white-space:nowrap}
+.sN{background:#f8d0d0;color:#8a1d1d}.sP{background:#fde3b8;color:#8a5a00}.sD{background:#cfe6cf;color:#1f5a2c}
+.sec{margin:14px 0 6px;font-weight:700}
+.chatbox{max-height:45vh;min-height:90px;overflow:auto;display:flex;flex-direction:column;gap:6px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:10px;margin:10px 0}
 .cb{max-width:85%;padding:8px 12px;border-radius:14px;font-size:.92rem;word-break:break-word}
 .cb .ct{display:block;font-size:.68rem;opacity:.7;margin-top:2px}
 .cc{align-self:flex-start;background:var(--sage)}.cs{align-self:flex-end;background:var(--green);color:#fff}
 .box{background:#fff;border:1px solid var(--line);border-radius:18px;padding:18px;margin-top:40px}
+.kv{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden;font-size:.9rem}
+.kv td{padding:6px 10px;border-bottom:1px solid var(--line);vertical-align:top;word-break:break-word}.kv td:first-child{color:var(--mute);width:34%}
+#banner{background:#fde3b8;border-radius:10px;padding:6px 10px;font-size:.85rem;margin:6px 0}
 </style></head><body>
-<div id="login" class="box"><h2>Admin inbox</h2><p class="note">Enter your admin PIN (set as ADMIN_PIN in your Google script).</p>
+<div id="login" class="box"><h2>Admin panel</h2><p class="note">Enter your admin PIN (the ADMIN_PIN you set in your Google script).</p>
 <input id="pin" type="password" placeholder="Admin PIN" autocomplete="current-password"><p id="lerr" class="note" style="color:#b3261e"></p><button id="go" style="width:100%">Open</button></div>
 <div id="app" class="hide">
- <h2>Admin inbox</h2>
- <div class="tabs"><button data-t="chats" class="on">Chats</button><button data-t="tickets">Help requests</button><button data-t="orders">Orders</button><button id="refresh" class="alt">↻ Refresh</button></div>
+ <h2>Admin panel</h2><div id="banner" class="hide"></div>
+ <div id="tabs" class="tabs"><button data-t="chats" class="on">Chats</button><button data-t="tickets">Help</button><button data-t="orders">Orders</button><button data-t="reviews">Reviews</button><button data-t="follow">Follow-up</button><button id="refresh" class="alt">↻</button></div>
+ <div id="tools" class="hide"><input id="search" placeholder="Search name, phone or order number"><div id="chips" class="chips"></div></div>
  <div id="list"></div>
- <div id="thread" class="hide"><button id="back" class="alt">← Back</button><h3 id="thTitle"></h3><p id="thInfo" class="note"></p>
-  <div id="thMsgs" class="chatbox"></div>
-  <textarea id="thText" rows="3" placeholder="Type your message to the customer"></textarea>
-  <p id="thMsg" class="note"></p><button id="thSend" style="width:100%">Send</button></div>
+ <div id="panel" class="hide"><button id="back" class="alt">← Back</button><h3 id="pTitle"></h3><p id="pInfo" class="note"></p>
+  <div id="pOrder" class="hide"><div id="pFields"></div><div id="pLinks" class="sec"></div><div id="pStatus" class="btns"></div>
+   <div class="btns"><button id="pCopy" class="alt">Copy links</button><a id="pWa" class="btn alt" target="_blank" rel="noopener">WhatsApp customer</a></div></div>
+  <div id="pMsgs" class="chatbox"></div><div id="pQuick" class="chips"></div>
+  <textarea id="pText" rows="3" placeholder="Type your message to the customer"></textarea><p id="pMsg" class="note"></p><button id="pSend" style="width:100%">Send</button></div>
 </div>
 <script>
 const SCRIPT_URL="https://script.google.com/macros/s/AKfycbxijTyicFx8BDB8gKxOzNunvsKRGgW2vnENdi1ozToBIKv5BnH9ejbFvnYplAHYO4V27A/exec";
+const SITE="https://velocitifiedshoppie.github.io/velocitifiedshoppie/";
+// Quick replies: edit the text freely. {name} and {id} are filled in automatically.
+const QUICK=[
+ ["Started","Hi {name}, your order {id} has started. It will be completed soon."],
+ ["Done","Hi {name}, your order {id} is done. Thank you! You can order again anytime: "+SITE],
+ ["Make public","Hi {name}, please make your Instagram account public so we can deliver your order {id}."],
+ ["Unhide counts","Hi {name}, your reel views and likes are hidden. Please unhide them and send the link again, otherwise the numbers will not increase."],
+ ["Flagged for review","Hi {name}, for followers please open Instagram Settings, search Follow and invite, and turn off Flagged for review. Then tell us here."],
+ ["Payment proof","Hi {name}, please send your UTR or payment screenshot for order {id} so we can confirm."],
+ ["Checking","Hi {name}, thank you for contacting us. We are checking and will reply shortly."]
+];
 const $=id=>document.getElementById(id);
 const eh=v=>String(v==null?"":v).replace(/[&<>"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]));
-function jget(q){return new Promise((res,rej)=>{const cb="cb"+Math.random().toString(36).slice(2,10),s=document.createElement("script");let t=null;
+function jsonp(q){return new Promise((res,rej)=>{const cb="cb"+Math.random().toString(36).slice(2,10),s=document.createElement("script");let t=null;
  const done=()=>{clearTimeout(t);try{delete window[cb]}catch(e){}s.remove()};
- t=setTimeout(()=>{done();rej(new Error("timeout"))},20000);
- window[cb]=d=>{done();res(d)};s.onerror=()=>{done();rej(new Error("failed"))};
+ t=setTimeout(()=>{done();rej(new Error("timeout"))},20000);window[cb]=d=>{done();res(d)};s.onerror=()=>{done();rej(new Error("failed"))};
  s.src=SCRIPT_URL+"?"+q+"&callback="+cb;document.head.appendChild(s)})}
-async function post(o){await fetch(SCRIPT_URL,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain"},body:JSON.stringify(o)})}
-let pin="",tab="chats",cur=null,data={chats:[],tickets:[],orders:[]};
+async function jget(q){const c=new AbortController(),t=setTimeout(()=>c.abort(),15000);
+ try{const r=await fetch(SCRIPT_URL+"?"+q,{credentials:"omit",signal:c.signal});if(!r.ok)throw new Error("http");return await r.json()}
+ catch(e){return jsonp(q)}finally{clearTimeout(t)}}
+async function post(o){await fetch(SCRIPT_URL,{method:"POST",mode:"no-cors",credentials:"omit",headers:{"Content-Type":"text/plain"},body:JSON.stringify(o)})}
+const api=q=>jget("act=admin&"+(q?q+"&":"")+"pin="+encodeURIComponent(pin));
+const ago=ts=>{const m=Math.max(0,Math.round((Date.now()-ts)/60000));return m<60?m+" min":m<1440?Math.floor(m/60)+"h":Math.floor(m/1440)+"d"};
+const wa=(phone,text)=>"https://wa.me/91"+String(phone).replace(/\D/g,"").slice(-10)+"?text="+encodeURIComponent(text);
+let pin="",tab="chats",cur=null,inbox={chats:[],tickets:[]},orders=[],reviews=[],follow={leads:[],customers:[]},flt="All",qry="";
 try{pin=sessionStorage.getItem("apin")||""}catch(e){}
+function banner(t){$("banner").textContent=t||"";$("banner").classList.toggle("hide",!t)}
 async function load(first){
- try{const j=await jget("act=admin&pin="+encodeURIComponent(pin));
-  if(!j.ok){$("lerr").textContent="Wrong PIN, or ADMIN_PIN is not set in the script yet.";$("login").classList.remove("hide");$("app").classList.add("hide");return}
-  data=j;try{sessionStorage.setItem("apin",pin)}catch(e){}$("login").classList.add("hide");$("app").classList.remove("hide");if(!cur)render()}
- catch(e){if(first)$("lerr").textContent="Could not reach the script. Check your internet."}}
+ try{let j;
+  if(tab=="orders")j=await api("a=orders");else if(tab=="reviews")j=await api("a=reviews");else if(tab=="follow")j=await api("a=followup&days=7");else j=await api("");
+  if(!j||!j.ok){$("lerr").textContent="Wrong PIN, or ADMIN_PIN is not set in the script yet.";$("login").classList.remove("hide");$("app").classList.add("hide");return}
+  if(tab=="orders")orders=j.orders;else if(tab=="reviews")reviews=j.reviews;else if(tab=="follow")follow=j;else inbox=j;
+  try{sessionStorage.setItem("apin",pin)}catch(e){}banner("");$("login").classList.add("hide");$("app").classList.remove("hide");if(!cur)render()}
+ catch(e){if(first)$("lerr").textContent="Could not reach the script. Check your internet, or try again in a minute.";else banner("Could not refresh. Check your internet.")}}
+function stBtns(o){return["Not done","Processing","Done"].map(s=>`<button class="sm ${o.status==s?"on":"alt"}" data-s="${s}" data-id="${eh(o.id)}">${s}</button>`).join("")}
 function render(){const L=$("list");let h="";
- if(tab=="chats")h=data.chats.length?data.chats.map(c=>`<div class="item" data-k="chat" data-id="${eh(c.cid)}"><b>${eh(c.name||"Customer")} ${c.from=="Customer"?'<span class="dot">● waiting for your reply</span>':""}</b>${eh(c.last)}<div class="note">${eh(c.t)}${c.phone?" · "+eh(c.phone):""}</div></div>`).join(""):'<p class="note">No chats yet.</p>';
- if(tab=="tickets")h=data.tickets.length?data.tickets.map(t=>`<div class="item" data-k="ticket" data-id="${eh(t.id)}"><b>${eh(t.id)} · ${eh(t.issue)} <span class="note">(${eh(t.status)})</span></b>${eh(t.name)} · ${eh(t.phone)}${t.order?" · "+eh(t.order):""}${t.details?"<br>"+eh(t.details):""}<div class="note">${eh(t.t)}</div></div>`).join(""):'<p class="note">No help requests yet.</p>';
- if(tab=="orders")h=data.orders.length?data.orders.map(o=>`<div class="item" data-k="order" data-id="${eh(o.id)}"><b>${eh(o.id)} · ${eh(o.name)} · ₹${eh(o.total)}</b><span class="note">${eh(o.phone)} · ${eh(o.status)} · tap to message</span></div>`).join(""):'<p class="note">No orders yet.</p>';
+ $("tools").classList.toggle("hide",tab!="orders");
+ if(tab=="chats")h=inbox.chats.length?inbox.chats.map(c=>`<div class="item" data-k="chat" data-id="${eh(c.cid)}"><b>${eh(c.name||"Customer")} ${c.from=="Customer"?'<span class="dot">● waiting for your reply</span>':""}</b>${eh(c.last)}<div class="note">${eh(c.t)}${c.phone?" · "+eh(c.phone):""}</div></div>`).join(""):'<p class="note">No chats yet.</p>';
+ if(tab=="tickets")h=inbox.tickets.length?inbox.tickets.map(t=>`<div class="item" data-k="ticket" data-id="${eh(t.id)}"><b>${eh(t.id)} · ${eh(t.issue)} <span class="note">(${eh(t.status)})</span></b>${eh(t.name)} · ${eh(t.phone)}${t.order?" · "+eh(t.order):""}${t.details?"<br>"+eh(t.details):""}<div class="note">${eh(t.t)}</div></div>`).join(""):'<p class="note">No help requests yet.</p>';
+ if(tab=="orders"){const q=qry.toLowerCase(),F=orders.filter(o=>(flt=="All"||o.status==flt)&&(!q||(o.name+" "+o.phone+" "+o.id).toLowerCase().includes(q)));
+  $("chips").innerHTML=["All","Not done","Processing","Done"].map(s=>`<button class="${flt==s?"on":""}" data-f="${s}">${s}</button>`).join("");
+  h=F.length?F.map(o=>`<div class="item" data-k="order" data-id="${eh(o.id)}"><div class="r1"><b>${eh(o.id)} · ${eh(o.name)} · ₹${eh(o.total)}</b><span class="badge s${o.status[0]}">${eh(o.status)}</span></div><div class="note">${eh(o.items)} · ${ago(o.ts)} ago${/MISMATCH/.test(o.check)?' · <span class="dot">payment mismatch</span>':""}</div><div class="btns">${stBtns(o)}</div></div>`).join(""):'<p class="note">No orders match.</p>'}
+ if(tab=="reviews")h=reviews.length?reviews.map(r=>`<div class="item"><div class="r1"><b>${eh(r.name)} · ${"★".repeat(Math.min(5,+r.stars||5))}</b><span class="badge ${r.status=="Approved"?"sD":r.status=="Hidden"?"sN":"sP"}">${eh(r.status)}</span></div>${eh(r.text)}<div class="note">${eh(r.pack)} · ${eh(r.t)}</div><div class="btns"><button class="sm ${r.status=="Approved"?"on":"alt"}" data-r="${r.row}" data-v="Approved">Approve</button><button class="sm ${r.status=="Hidden"?"on":"alt"}" data-r="${r.row}" data-v="Hidden">Hide</button></div></div>`).join(""):'<p class="note">No reviews yet.</p>';
+ if(tab=="follow"){h='<div class="sec">Started an order but did not finish</div>'+(follow.leads.length?follow.leads.map(l=>`<div class="item"><b>${eh(l.name)} · ${eh(l.phone)}</b>${eh(l.items)} · ₹${eh(l.total)}<div class="note">${eh(l.t)}</div><div class="btns"><a class="btn sm" target="_blank" rel="noopener" href="${wa(l.phone,"Hi "+l.name+", we noticed you were about to order from Velocitifiedshoppie. Can we help you finish your order? "+SITE)}">WhatsApp</a></div></div>`).join(""):'<p class="note">None right now.</p>')
+  +'<div class="sec">Customers who have not ordered for 7+ days</div>'+(follow.customers.length?follow.customers.map(c=>`<div class="item"><b>${eh(c.name)} · ${eh(c.phone)}</b>${c.n} order${c.n>1?"s":""} · ₹${eh(c.spent)}${c.spent==0?" (free demo only)":""} · last ${c.ago} days ago<div class="btns"><a class="btn sm" target="_blank" rel="noopener" href="${wa(c.phone,"Hi "+c.name+", thank you for ordering from Velocitifiedshoppie earlier! You can order again anytime: "+SITE)}">WhatsApp</a></div></div>`).join(""):'<p class="note">None right now.</p>')}
  L.innerHTML=h}
-async function loadThread(){if(!cur||cur.k!="chat")return;try{const j=await jget("act=admin&a=thread&cid="+encodeURIComponent(cur.id)+"&pin="+encodeURIComponent(pin));
-  const b=$("thMsgs");b.innerHTML=(j.msgs||[]).map(m=>`<div class="cb ${m.from=="Shop"?"cs":"cc"}">${eh(m.text)}<span class="ct">${m.from=="Shop"?"You · ":""}${m.o?"about "+eh(m.o)+" · ":""}${eh(m.t||"")}</span></div>`).join("")||'<p class="note">No messages yet.</p>';b.scrollTop=b.scrollHeight}catch(e){}}
-function open_(k,id){cur={k,id};$("list").classList.add("hide");$("thread").classList.remove("hide");$("thMsg").textContent="";$("thText").value="";
- const c=data.chats.find(x=>x.cid==id),t=data.tickets.find(x=>x.id==id),o=data.orders.find(x=>x.id==id);
- if(k=="chat"){$("thTitle").textContent=(c&&c.name)||"Customer chat";$("thInfo").textContent=(c&&c.phone)?c.phone:"";$("thMsgs").classList.remove("hide");loadThread()}
- else{$("thMsgs").classList.add("hide");
-  if(k=="ticket"){$("thTitle").textContent=id+" · "+(t?t.issue:"");$("thInfo").textContent=t?t.name+" · "+t.phone+(t.order?" · "+t.order:"")+(t.details?" · "+t.details:""):""}
-  else{$("thTitle").textContent="Message "+id;$("thInfo").textContent=o?o.name+" · "+o.phone+" · "+o.status:""}}}
-function close_(){cur=null;$("thread").classList.add("hide");$("list").classList.remove("hide");render()}
-$("list").onclick=e=>{const it=e.target.closest(".item");if(it)open_(it.dataset.k,it.dataset.id)};
-$("back").onclick=()=>{close_();load()};
-document.querySelectorAll(".tabs button[data-t]").forEach(b=>b.onclick=()=>{tab=b.dataset.t;document.querySelectorAll(".tabs button[data-t]").forEach(x=>x.classList.toggle("on",x==b));if(cur)close_();else render()});
+function setStatus(id,s){const o=orders.find(x=>x.id==id);if(o)o.status=s;if(cur&&cur.k=="order"&&cur.o)cur.o.status=s;
+ post({type:"admin",pin,action:"status",target:id,status:s});if(cur&&cur.k=="order")fillOrder();else render();setTimeout(()=>{if(!cur)load()},3000)}
+function setReview(row,v){const r=reviews.find(x=>x.row==row);if(r)r.status=v;post({type:"admin",pin,action:"review",target:String(row),status:v});render()}
+function bubbles(msgs){return(msgs||[]).map(m=>`<div class="cb ${m.from=="Shop"?"cs":"cc"}">${eh(m.text)}<span class="ct">${m.from=="Shop"?"You · ":""}${m.o?"about "+eh(m.o)+" · ":""}${eh(m.t||"")}</span></div>`).join("")||'<p class="note">No messages yet.</p>'}
+function linkParts(l){return String(l||"").split(" | ").map(x=>{const m=x.match(/https?:\/\/\S+/);return{label:m?x.replace(m[0],"").replace(/:\s*$/,"").trim():x,url:m?m[0]:""}})}
+function fillOrder(){const o=cur.o;if(!o)return;
+ const rows=[["Time",o.time],["Name",o.name],["Phone",o.phone],["Packs",o.items],["Subtotal","₹"+o.subtotal],["Discount","₹"+o.discount],["Total","₹"+o.total],["Amount paid","₹"+o.paid],["Payment check",o.check],["UTR",o.utr],["Notes",o.notes||"-"],["Status",o.status]];
+ $("pFields").innerHTML='<table class="kv">'+rows.map(r=>`<tr><td>${r[0]}</td><td>${eh(r[1])}</td></tr>`).join("")+"</table>";
+ $("pLinks").innerHTML="Links"+linkParts(o.link).map(p=>`<div style="font-weight:400">${eh(p.label)} ${p.url?`<a href="${eh(p.url)}" target="_blank" rel="noopener">${eh(p.url)}</a>`:""}</div>`).join("");
+ $("pStatus").innerHTML=stBtns(o);$("pWa").href=wa(o.phone,"Hi "+o.name+", about your order "+o.id+" from Velocitifiedshoppie: ")}
+async function loadThread(){if(!cur)return;try{
+ if(cur.k=="chat"){const j=await api("a=thread&cid="+encodeURIComponent(cur.id));$("pMsgs").innerHTML=bubbles(j.msgs)}
+ if(cur.k=="order"){const j=await api("a=order&id="+encodeURIComponent(cur.id));if(j.ok){cur.o=j.o;cur.name=j.o.name;fillOrder();$("pMsgs").innerHTML=bubbles(j.msgs)}}
+ const b=$("pMsgs");b.scrollTop=b.scrollHeight}catch(e){}}
+function open_(k,id){cur={k,id,name:"",order:""};const c=inbox.chats.find(x=>x.cid==id),t=inbox.tickets.find(x=>x.id==id),o=orders.find(x=>x.id==id);
+ ["list","tabs","tools"].forEach(x=>$(x).classList.add("hide"));$("panel").classList.remove("hide");$("pMsg").textContent="";$("pText").value="";$("pOrder").classList.toggle("hide",k!="order");$("pMsgs").classList.toggle("hide",k=="ticket");
+ if(k=="chat"){cur.name=(c&&c.name)||"";$("pTitle").textContent=cur.name||"Customer chat";$("pInfo").textContent=(c&&c.phone)||"";$("pMsgs").innerHTML="";loadThread()}
+ if(k=="ticket"){cur.name=t?t.name:"";cur.order=t?t.order:"";$("pTitle").textContent=id+" · "+(t?t.issue:"");$("pInfo").textContent=t?t.name+" · "+t.phone+(t.order?" · "+t.order:"")+(t.details?" · "+t.details:""):""}
+ if(k=="order"){cur.name=o?o.name:"";$("pTitle").textContent="Order "+id;$("pInfo").textContent="";$("pFields").innerHTML='<p class="note">Loading…</p>';$("pMsgs").innerHTML="";loadThread()}
+ $("pQuick").innerHTML=QUICK.map((q,i)=>`<button data-q="${i}">${eh(q[0])}</button>`).join("")}
+function close_(){cur=null;$("panel").classList.add("hide");["list","tabs"].forEach(x=>$(x).classList.remove("hide"));render();load()}
+$("pQuick").onclick=e=>{const b=e.target.closest("button[data-q]");if(!b)return;$("pText").value=QUICK[b.dataset.q][1].replace(/\{name\}/g,cur.name||"there").replace(/\{id\}/g,cur.k=="order"?cur.id:(cur.order||"your order"));$("pText").focus()};
+$("pStatus").onclick=e=>{const b=e.target.closest("button[data-s]");if(b)setStatus(b.dataset.id,b.dataset.s)};
+$("pCopy").onclick=async()=>{const t=linkParts(cur.o&&cur.o.link).map(p=>p.url||p.label).join("\n");try{await navigator.clipboard.writeText(t);$("pCopy").textContent="Copied ✔"}catch(e){prompt("Copy the links:",t)}};
+$("list").onclick=e=>{const sb=e.target.closest("button[data-s]");if(sb){setStatus(sb.dataset.id,sb.dataset.s);return}
+ const rb=e.target.closest("button[data-r]");if(rb){setReview(rb.dataset.r,rb.dataset.v);return}
+ if(e.target.closest("a"))return;const it=e.target.closest(".item[data-k]");if(it)open_(it.dataset.k,it.dataset.id)};
+$("chips").onclick=e=>{const b=e.target.closest("button[data-f]");if(b){flt=b.dataset.f;render()}};
+$("search").oninput=e=>{qry=e.target.value.trim();render()};
+$("back").onclick=close_;
+document.querySelectorAll("#tabs button[data-t]").forEach(b=>b.onclick=()=>{tab=b.dataset.t;document.querySelectorAll("#tabs button[data-t]").forEach(x=>x.classList.toggle("on",x==b));$("list").innerHTML='<p class="note">Loading…</p>';load()});
 $("refresh").onclick=()=>{cur?loadThread():load()};
 $("go").onclick=()=>{pin=$("pin").value.trim();$("lerr").textContent="";load(true)};
 $("pin").onkeydown=e=>{if(e.key=="Enter")$("go").click()};
-$("thSend").onclick=async()=>{const t=$("thText").value.trim(),m=$("thMsg"),b=$("thSend");if(t.length<1||!cur){m.textContent="Type a message first.";return}
+$("pSend").onclick=async()=>{const t=$("pText").value.trim(),m=$("pMsg"),b=$("pSend");if(!t||!cur){m.textContent="Type a message first.";return}
  b.disabled=true;b.textContent="Sending…";
- try{await post({type:"admin",pin,action:cur.k=="chat"?"reply":cur.k=="ticket"?"ticket":"msg",target:cur.id,text:t});$("thText").value="";m.textContent="Sent ✔ The customer will see it in their chat box and under Track your order.";setTimeout(loadThread,2000)}
+ try{await post({type:"admin",pin,action:cur.k=="chat"?"reply":cur.k=="ticket"?"ticket":"msg",target:cur.id,text:t});$("pText").value="";m.textContent="Sent ✔ The customer will see it in their chat box and under Track your order.";setTimeout(loadThread,2000)}
  catch(e){m.textContent="Could not send. Check your internet and try again."}
  b.disabled=false;b.textContent="Send"};
-setInterval(()=>{if(document.hidden||$("app").classList.contains("hide"))return;if(cur)loadThread();else load()},15000);
+setInterval(()=>{if(document.hidden||$("app").classList.contains("hide"))return;if(cur){if(cur.k!="ticket")loadThread()}else load()},20000);
 if(pin)load(true);
 </script></body></html>
